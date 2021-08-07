@@ -25,7 +25,7 @@
         - <code>CMake</code> 2.8 or later<br /><br />
         <b>Building needed libraries:</b><br />
         - Build <a href="https://github.com/glfw/glfw/releases/tag/3.3.4">GLFW 3.3.4</a> (create build folder, use CMake to build Makefile, make)<br />
-        - Copy the built library named <code>build/src/libglfw.a</code> into <code>spark-engine/libs/lib/libglfw.a</code><br /><br />
+        - Copy the built library named <code>build/src/libglfw3.a</code> into <code>spark-engine/libs/lib/libglfw3.a</code><br /><br />
         - Build <a href="https://github.com/recp/cglm/releases/tag/v0.8.3">CGML 0.8.3</a> (create build folder, use CMake to build Makefile, make)<br />
         - Copy the built library named <code>build/libcglm.dll.a</code> into <code>spark-engine/libs/lib/libcglm.a</code><br /><br />
         <b>Building the game engine:</b><br />
