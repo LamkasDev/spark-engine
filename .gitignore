@@ -5,4 +5,7 @@
 build/*
 
 # Libs (too lazy rn)
-
+libs/include/GLFW
+libs/include/cglm
+libs/lib/libglfw3.a
+libs/lib/libcglm.a
