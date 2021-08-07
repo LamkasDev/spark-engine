@@ -1,0 +1,8 @@
+# VSCode trash
+.vscode/
+
+# Build
+build/*
+
+# Libs (too lazy rn)
+
