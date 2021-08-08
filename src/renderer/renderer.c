@@ -300,22 +300,20 @@ void sparkRender(SparkRenderer* renderer) {
     glm_translate(view, locVec);
     glm_perspective(glm_rad(90.0f), (float)renderer->ww / (float)renderer->wh, 0.1f, 100.0f, proj);
 
-    float rot = 0.0f;
     float targetFPS = 60.00f;
     float targetDeltaTime = 1.00f / targetFPS;
     clock_t clock_0 = clock();
+
+    /* Create renderer objects */
+    sparkCreateRendererObjects(renderer);
 
     while(!glfwWindowShouldClose(renderer->window)) {
         float deltaTime = ((clock() - clock_0) / 1000.0f);
         if(deltaTime > targetDeltaTime) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            /* TODO: Delete all renderer objects and their buffers (or not create new renderer objects and buffers everytime) */
-
-            /* Create renderer objects */
-            sparkCreateRendererObjects(renderer);
 
             /* speeeen */
-            glm_rotate(model, glm_rad(rot), rotVec);
+            glm_rotate(model, glm_rad(5.0f), rotVec);
 
             /* Draw all renderer objects */
             for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
@@ -358,7 +356,6 @@ void sparkRender(SparkRenderer* renderer) {
             }
 
             clock_0 = clock();
-            rot += 0.10f;
             glfwSwapBuffers(renderer->window);
         }
 
