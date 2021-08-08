@@ -3,10 +3,11 @@
 
 struct SparkTexture {
     GLuint id;
+    char* name;
     void* options;
 };
 typedef struct SparkTexture SparkTexture;
-SparkTexture sparkCreateTexture();
+SparkTexture sparkCreateTexture(char* name);
 void sparkLoadTexture(SparkTexture* texture, char* path);
 
 #endif

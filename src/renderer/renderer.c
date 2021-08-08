@@ -26,26 +26,40 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     glViewport(0, 0, renderer->ww, renderer->wh);
 
     renderer->rendererObjects = vector_create();
-    renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL)
-    renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHasmapTextureHash, sparkHashmapTextureCompare, NULL)
+    renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL);
+    renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHashmapTextureHash, sparkHashmapTextureCompare, NULL);
     renderer->window = window;
 }
 
 void sparkCompileShaders(SparkRenderer* renderer) {
     int size;
-    const unsigned char* colorVertexShaderSource = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\color_vertex.shader", true, &size);
-    const unsigned char* colorFragmentShaderSource = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\color_fragment.shader", true, &size);
+    const unsigned char* colorVertexShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_vertex.shader", true, &size);
+    const unsigned char* colorFragmentShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_fragment.shader", true, &size);
 
-    SparkShader colorShader;
-    sparkInitializeShader(&colorShader, "Color", colorVertexShaderSource, colorFragmentShaderSource);
-    vector_add(&renderer->shaders, colorShader);
+    SparkShader colorShader0;
+    sparkInitializeShader(&colorShader0, "2DColor", colorVertexShaderSource0, colorFragmentShaderSource0);
+    hashmap_set(renderer->shaders, &colorShader0);
 
-    const unsigned char* textureVertexShaderSource = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\tex_vertex.shader", true, &size);
-    const unsigned char* textureFragmentShaderSource = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\tex_fragment.shader", true, &size);
+    const unsigned char* textureVertexShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_vertex.shader", true, &size);
+    const unsigned char* textureFragmentShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_fragment.shader", true, &size);
 
-    SparkShader textureShader;
-    sparkInitializeShader(&textureShader, "Texture", textureVertexShaderSource, textureFragmentShaderSource);
-    vector_add(&renderer->shaders, textureShader);
+    SparkShader textureShader0;
+    sparkInitializeShader(&textureShader0, "2DTexture", textureVertexShaderSource0, textureFragmentShaderSource0);
+    hashmap_set(renderer->shaders, &textureShader0);
+
+    const unsigned char* colorVertexShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_vertex.shader", true, &size);
+    const unsigned char* colorFragmentShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_fragment.shader", true, &size);
+
+    SparkShader colorShader1;
+    sparkInitializeShader(&colorShader1, "3DColor", colorVertexShaderSource1, colorFragmentShaderSource1);
+    hashmap_set(renderer->shaders, &colorShader1);
+
+    const unsigned char* textureVertexShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_vertex.shader", true, &size);
+    const unsigned char* textureFragmentShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_fragment.shader", true, &size);
+
+    SparkShader textureShader1;
+    sparkInitializeShader(&textureShader1, "3DTexture", textureVertexShaderSource1, textureFragmentShaderSource1);
+    hashmap_set(renderer->shaders, &textureShader1);
 }
 
 void sparkOnWindowResize(GLFWwindow* window, int ww, int wh) {
@@ -220,14 +234,20 @@ void sparkCreateRendererObjects(SparkRenderer* renderer) {
 
                     rendererObject.vertices = vertices;
                     rendererObject.indices = indices;
-                    if(component->type == COMPONENT_TYPE_RENDERER) {
-                        rendererObject.type = RENDERER_OBJECT_TYPE_COLOR;
-                    } else if(component->type == COMPONENT_TYPE_TEXTURE_RENDERER) {
-                        SparkComponentData* textureData = hashmap_get(component->data, &(SparkComponentData){ .key = "texture" });
-                        SparkTexture* texture = textureData->data;
+                    switch(component->type) {
+                        case COMPONENT_TYPE_RENDERER: {
+                            rendererObject.type = RENDERER_OBJECT_TYPE_COLOR;
+                            break;
+                        }
 
-                        rendererObject.type = RENDERER_OBJECT_TYPE_TEXTURE;
-                        rendererObject.texture = texture;
+                        case COMPONENT_TYPE_TEXTURE_RENDERER: {
+                            SparkComponentData* textureData = hashmap_get(component->data, &(SparkComponentData){ .key = "texture" });
+                            SparkTexture* texture = textureData->data;
+
+                            rendererObject.type = RENDERER_OBJECT_TYPE_TEXTURE;
+                            rendererObject.texture = texture;
+                            break;
+                        }
                     }
                     
                     vector_add(&renderer->rendererObjects, rendererObject);
@@ -260,41 +280,42 @@ void sparkCreateRendererObjects(SparkRenderer* renderer) {
 
         sparkUnbindRendererObject();
     }
-
-    /* Specify background color */
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void sparkRender(SparkRenderer* renderer) {
-    GLuint uniTex = glGetUniformLocation(renderer->shaders[1].id, "tex0");
-    glUniform1f(uniTex, 0);
+    /* temporary */
+    SparkShader* colorShader0 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "2DColor" });
+    SparkShader* textureShader0 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "2DTexture" });
+    SparkShader* colorShader1 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "3DColor" });
+    SparkShader* textureShader1 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "3DTexture" });
 
-    float targetFPS = 60.0f;
+    /* h */
+    SparkMat4 model, view, proj;
+    glm_mat4_identity_array(&model, 1);
+    glm_mat4_identity_array(&view, 1);
+    glm_mat4_identity_array(&proj, 1);
+
+    vec3 locVec = { 0.35f, -0.35f, -2.0f };
+    vec3 rotVec = { 1.0f, 1.0f, 1.0f };
+    glm_translate(view, locVec);
+    glm_perspective(glm_rad(90.0f), (float)renderer->ww / (float)renderer->wh, 0.1f, 100.0f, proj);
+
+    float rot = 0.0f;
+    float targetFPS = 60.00f;
+    float targetDeltaTime = 1.00f / targetFPS;
     clock_t clock_0 = clock();
+
     while(!glfwWindowShouldClose(renderer->window)) {
-        if(targetFPS < 0 || (clock() - clock_0) / CLOCKS_PER_SEC > 1 / targetFPS) {
-            glClear(GL_COLOR_BUFFER_BIT);
+        float deltaTime = ((clock() - clock_0) / 1000.0f);
+        if(deltaTime > targetDeltaTime) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             /* TODO: Delete all renderer objects and their buffers (or not create new renderer objects and buffers everytime) */
 
             /* Create renderer objects */
             sparkCreateRendererObjects(renderer);
 
-            /* h */
-            SparkMat4 model = GLM_MAT4_IDENTITY_INIT, view = GLM_MAT4_IDENTITY_INIT, proj = GLM_MAT4_IDENTITY_INIT;
-            vec3 locVec = { 0.0f, -0.5f, -2.0f };
-            vec3 rotVec = { 0.0f, 1.0f, 0.0f };
-
-            glm_rotate(model, glm_rad(45.0f), rotVec);
-            glm_translate(view, locVec);
-            glm_perspective(glm_rad(45.0f), (float)(renderer->ww / renderer->wh), 0.1f, 100.0f, proj);
-
-            GLuint modelLoc = glGetUniformLocation(renderer->shaders[0].id, "model");
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model);
-            GLuint viewLoc = glGetUniformLocation(renderer->shaders[0].id, "view");
-            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view);
-            GLuint projLoc = glGetUniformLocation(renderer->shaders[0].id, "proj");
-            glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj);
+            /* speeeen */
+            glm_rotate(model, glm_rad(rot), rotVec);
 
             /* Draw all renderer objects */
             for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
@@ -302,11 +323,34 @@ void sparkRender(SparkRenderer* renderer) {
 
                 sparkBindRendererObject(rendererObject);
                 /* TODO: Assign a shader to the renderer object */
-                if(rendererObject->type == RENDERER_OBJECT_TYPE_COLOR) {
-                    sparkActivateShader(&renderer->shaders[0]);
-                } else {
-                    sparkActivateShader(&renderer->shaders[1]);
-                    glBindTexture(GL_TEXTURE_2D, rendererObject->texture->id);
+                switch(rendererObject->type) {
+                    case RENDERER_OBJECT_TYPE_COLOR: {
+                        GLuint modelLoc0 = glGetUniformLocation(colorShader1->id, "model");
+                        glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
+                        GLuint viewLoc0 = glGetUniformLocation(colorShader1->id, "view");
+                        glUniformMatrix4fv(viewLoc0, 1, GL_FALSE, view);
+                        GLuint projLoc0 = glGetUniformLocation(colorShader1->id, "proj");
+                        glUniformMatrix4fv(projLoc0, 1, GL_FALSE, proj);
+
+                        sparkActivateShader(colorShader1);
+                        break;
+                    }
+
+                    case RENDERER_OBJECT_TYPE_TEXTURE: {
+                        GLuint modelLoc1 = glGetUniformLocation(textureShader1->id, "model");
+                        glUniformMatrix4fv(modelLoc1, 1, GL_FALSE, model);
+                        GLuint viewLoc1 = glGetUniformLocation(textureShader1->id, "view");
+                        glUniformMatrix4fv(viewLoc1, 1, GL_FALSE, view);
+                        GLuint projLoc1 = glGetUniformLocation(textureShader1->id, "proj");
+                        glUniformMatrix4fv(projLoc1, 1, GL_FALSE, proj);
+
+                        GLuint uniTex1 = glGetUniformLocation(textureShader1->id, "tex0");
+                        glUniform1f(uniTex1, 0);
+
+                        sparkActivateShader(textureShader1);
+                        glBindTexture(GL_TEXTURE_2D, rendererObject->texture->id);
+                        break;
+                    }
                 }
                 sparkDrawRendererObject(rendererObject);
             
@@ -314,6 +358,7 @@ void sparkRender(SparkRenderer* renderer) {
             }
 
             clock_0 = clock();
+            rot += 0.10f;
             glfwSwapBuffers(renderer->window);
         }
 
@@ -324,10 +369,7 @@ void sparkRender(SparkRenderer* renderer) {
         SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
         sparkDeleteRendererObject(rendererObject);
     }
-    for(int i = 0; i < vector_size(renderer->shaders); i++) {
-        SparkShader* shader = &renderer->shaders[i];
-        sparkDeleteShader(shader);
-    }
+    hashmap_scan(renderer->shaders, sparkDeleteShaderIter, NULL);
     /* TODO: Delete all textures */
 
     glfwDestroyWindow(renderer->window);

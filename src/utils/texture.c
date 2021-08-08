@@ -1,11 +1,12 @@
 #include "hashmap_utils.h"
 #include "../components/component_data.h"
 
-SparkTexture sparkCreateTexture() {
+SparkTexture sparkCreateTexture(char* name) {
     int filter = GL_NEAREST;
     int wrap = RENDERER_SHAPE_QUAD;
 
     SparkTexture texture = {
+        .name = name,
         .options = hashmap_new(sizeof(SparkComponentData), 0, 0, 0, sparkHasmapComponentHash, sparkHashmapComponentCompare, NULL)
     };
     hashmap_set(texture.options, &(SparkComponentData){ .key = "filter", .data = &filter });

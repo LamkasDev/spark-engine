@@ -29,6 +29,12 @@ void sparkDeleteShader(SparkShader* shader) {
     glDeleteProgram(shader->id);
 }
 
+bool sparkDeleteShaderIter(const void *item, void *udata) {
+    SparkShader* shader = (SparkShader*)item;
+    sparkDeleteShader(shader);
+    return true;
+}
+
 void sparkVerifyShader(SparkShader* shader, unsigned int id, char* type) {
     GLint status;
     char infoLog[1024];

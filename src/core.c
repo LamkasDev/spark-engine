@@ -23,6 +23,7 @@ void run() {
 
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_MULTISAMPLE);
+    glEnable(GL_DEPTH_TEST);
     
     int iconC;
     GLFWimage icons[1];
@@ -40,18 +41,18 @@ void run() {
 
     clock_t end_1 = clock();
     double elapsed_1 = (double)(end_1 - begin_1) / CLOCKS_PER_SEC;
-    printf("Compiled shaders (%i shaders in %.3fs)!\n", vector_size(renderer.shaders), elapsed_1);
+    printf("Compiled shaders (%i shaders in %.3fs)!\n", hashmap_count(renderer.shaders), elapsed_1);
     printf("Loading textures...\n");
     clock_t begin_2 = clock();
     
     /* Load textures */
-    SparkTexture texture_0 = sparkCreateTexture();
+    SparkTexture texture_0 = sparkCreateTexture("chocola");
     sparkLoadTexture(&texture_0, "D:\\Coding\\spark-engine\\build_src\\textures\\chocola.png");
-    vector_add(&renderer.textures, texture_0);
+    hashmap_set(renderer.textures, &texture_0);
 
     clock_t end_2 = clock();
     double elapsed_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
-    printf("Loaded textures (%i textures in %.3fs)!\n", vector_size(renderer.textures), elapsed_2);
+    printf("Loaded textures (%i textures in %.3fs)!\n", hashmap_count(renderer.textures), elapsed_2);
     printf("Creating Scene...\n");
     clock_t begin_3 = clock();
 
