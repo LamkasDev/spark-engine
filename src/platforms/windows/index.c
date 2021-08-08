@@ -20,6 +20,8 @@
 #include "../../gameobjects/gameobject.c"
 #include "../../io/io.c"
 #include "../../renderer/renderer.c"
+#include "../../renderer/2D/2D_utils.c"
+#include "../../renderer/3D/3D_utils.c"
 #include "../../renderer/glad/glad.c"
 #include "../../renderer/shaders/shader.c"
 #include "../../renderer/utils/renderer_object.c"
