@@ -50,6 +50,9 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
         }
     }
 
+    SparkComponentData* materialData = hashmap_get(component->data, &(SparkComponentData){ .key = "material" });
+    SparkMaterial* material = materialData->data;
+
     GLfloat* vertices = vector_create();
     for(int k = 0; k < vector_size(points); k++) {
         SparkVector2* point = &points[k];
@@ -59,7 +62,7 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
 
         switch(component->type) {
             case COMPONENT_TYPE_2D_RENDERER: {
-                SparkComponentData* colorData = hashmap_get(component->data, &(SparkComponentData){ .key = "color" });
+                SparkComponentData* colorData = hashmap_get(material->data, &(SparkComponentData){ .key = "color" });
                 SparkColor* color = colorData->data;
             
                 /* Add colors */
@@ -151,6 +154,8 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
 
     rendererObject.vertices = vertices;
     rendererObject.indices = indices;
+    rendererObject.material = material;
+
     switch(component->type) {
         case COMPONENT_TYPE_2D_RENDERER: {
             rendererObject.type = RENDERER_OBJECT_TYPE_2D_COLOR;
@@ -158,11 +163,7 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
         }
 
         case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
-            SparkComponentData* textureData = hashmap_get(component->data, &(SparkComponentData){ .key = "texture" });
-            SparkTexture* texture = textureData->data;
-
             rendererObject.type = RENDERER_OBJECT_TYPE_2D_TEXTURE;
-            rendererObject.texture = texture;
             break;
         }
     }

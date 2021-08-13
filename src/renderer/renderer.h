@@ -21,6 +21,7 @@ struct SparkRenderer {
     SparkRendererObject* rendererObjects;
     hashmap shaders;
     hashmap textures;
+    hashmap materials;
 
     int ww;
     int wh;

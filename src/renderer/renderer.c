@@ -30,6 +30,7 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     renderer->rendererObjects = vector_create();
     renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL);
     renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHashmapTextureHash, sparkHashmapTextureCompare, NULL);
+    renderer->materials = hashmap_new(sizeof(SparkMaterial), 0, 0, 0, sparkHashmapMaterialHash, sparkHashmapMaterialCompare, NULL);
     renderer->window = window;
 }
 
@@ -126,12 +127,6 @@ void sparkCreateRendererObjects(SparkRenderer* renderer) {
 }
 
 void sparkRender(SparkRenderer* renderer) {
-    /* [temporary] Get default shaders */
-    SparkShader* colorShader0 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "2DColor" });
-    SparkShader* textureShader0 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "2DTexture" });
-    SparkShader* colorShader1 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "3DColor" });
-    SparkShader* textureShader1 = hashmap_get(renderer->shaders, &(SparkShader){ .name = "3DTexture" });
-
     /* [temporary] Create model matrices */
     SparkMat4 model, view, proj;
     glm_mat4_identity_array(&model, 1);
@@ -164,52 +159,48 @@ void sparkRender(SparkRenderer* renderer) {
             for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
                 SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
 
+                SparkComponentData* shaderData = hashmap_get(rendererObject->material->data, &(SparkComponentData){ .key = "shader" });
+                SparkShader* shader = shaderData->data;
+
                 sparkBindRendererObject(rendererObject);
-                /* TODO: Create a Material struct (Material will have name, shader*, color, texture* props) */
-                /*       Assign the Material to rendererObject */
-                /*       Set uniforms in shader */
-                /*       Activate shader */
-                /* TODO: move this somewhere else */
+                sparkActivateShader(shader);
                 switch(rendererObject->type) {
-                    case RENDERER_OBJECT_TYPE_2D_COLOR: {
-                        sparkActivateShader(colorShader0);
-                        break;
-                    }
-
                     case RENDERER_OBJECT_TYPE_3D_COLOR: {
-                        GLuint modelLoc0 = glGetUniformLocation(colorShader1->id, "model");
+                        GLuint modelLoc0 = glGetUniformLocation(shader->id, "model");
                         glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
-                        GLuint viewLoc0 = glGetUniformLocation(colorShader1->id, "view");
+                        GLuint viewLoc0 = glGetUniformLocation(shader->id, "view");
                         glUniformMatrix4fv(viewLoc0, 1, GL_FALSE, view);
-                        GLuint projLoc0 = glGetUniformLocation(colorShader1->id, "proj");
+                        GLuint projLoc0 = glGetUniformLocation(shader->id, "proj");
                         glUniformMatrix4fv(projLoc0, 1, GL_FALSE, proj);
-
-                        sparkActivateShader(colorShader1);
                         break;
                     }
 
                     case RENDERER_OBJECT_TYPE_2D_TEXTURE: {
-                        GLuint uniTex1 = glGetUniformLocation(textureShader0->id, "tex0");
+                        SparkComponentData* textureData = hashmap_get(rendererObject->material->data, &(SparkComponentData){ .key = "texture" });
+                        SparkTexture* texture = textureData->data;
+
+                        GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
                         glUniform1f(uniTex1, 0);
 
-                        sparkActivateShader(textureShader0);
-                        glBindTexture(GL_TEXTURE_2D, rendererObject->texture->id);
+                        glBindTexture(GL_TEXTURE_2D, texture->id);
                         break;
                     }
 
                     case RENDERER_OBJECT_TYPE_3D_TEXTURE: {
-                        GLuint modelLoc1 = glGetUniformLocation(textureShader1->id, "model");
+                        SparkComponentData* textureData = hashmap_get(rendererObject->material->data, &(SparkComponentData){ .key = "texture" });
+                        SparkTexture* texture = textureData->data;
+
+                        GLuint modelLoc1 = glGetUniformLocation(shader->id, "model");
                         glUniformMatrix4fv(modelLoc1, 1, GL_FALSE, model);
-                        GLuint viewLoc1 = glGetUniformLocation(textureShader1->id, "view");
+                        GLuint viewLoc1 = glGetUniformLocation(shader->id, "view");
                         glUniformMatrix4fv(viewLoc1, 1, GL_FALSE, view);
-                        GLuint projLoc1 = glGetUniformLocation(textureShader1->id, "proj");
+                        GLuint projLoc1 = glGetUniformLocation(shader->id, "proj");
                         glUniformMatrix4fv(projLoc1, 1, GL_FALSE, proj);
 
-                        GLuint uniTex1 = glGetUniformLocation(textureShader1->id, "tex0");
+                        GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
                         glUniform1f(uniTex1, 0);
 
-                        sparkActivateShader(textureShader1);
-                        glBindTexture(GL_TEXTURE_2D, rendererObject->texture->id);
+                        glBindTexture(GL_TEXTURE_2D, texture->id);
                         break;
                     }
                 }

@@ -7,7 +7,7 @@
 #define RENDERER_OBJECT_TYPE_3D_COLOR 2
 #define RENDERER_OBJECT_TYPE_3D_TEXTURE 3
 
-#include "../../structs/texture.h"
+#include "../../structs/material.h"
 
 struct SparkRendererObject {
     int type;
@@ -19,7 +19,7 @@ struct SparkRendererObject {
     GLuint EBO;
     int drawType;
 
-    SparkTexture* texture;
+    SparkMaterial* material;
 };
 typedef struct SparkRendererObject SparkRendererObject;
 

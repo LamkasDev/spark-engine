@@ -30,3 +30,14 @@ uint64_t sparkHashmapTextureHash(const void *item, uint64_t seed0, uint64_t seed
     const SparkTexture *tex = item;
     return hashmap_sip(tex->name, strlen(tex->name), seed0, seed1);
 }
+
+int sparkHashmapMaterialCompare(const void *a, const void *b, void *udata) {
+    const SparkMaterial *ia = a;
+    const SparkMaterial *ib = b;
+    return strcmp(ia->name, ib->name);
+}
+
+uint64_t sparkHashmapMaterialHash(const void *item, uint64_t seed0, uint64_t seed1) {
+    const SparkMaterial *mat = item;
+    return hashmap_sip(mat->name, strlen(mat->name), seed0, seed1);
+}
