@@ -12,7 +12,7 @@
 
 #include "utils/renderer_object.h"
 #include "shaders/shader.h"
-#include "../utils/texture.h"
+#include "../structs/texture.h"
 
 struct SparkRenderer {
     GLFWwindow* window;

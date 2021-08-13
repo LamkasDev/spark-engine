@@ -25,12 +25,12 @@
 #include "../../renderer/glad/glad.c"
 #include "../../renderer/shaders/shader.c"
 #include "../../renderer/utils/renderer_object.c"
-#include "../../utils/color.c"
+#include "../../structs/color.c"
+#include "../../structs/scene.c"
+#include "../../structs/texture.c"
+#include "../../structs/vector_2.c"
+#include "../../structs/vector_3.c"
 #include "../../utils/hashmap_utils.c"
-#include "../../utils/scene.c"
-#include "../../utils/texture.c"
-#include "../../utils/vector_2.c"
-#include "../../utils/vector_3.c"
 #include "../../utils/math.c"
 
 int main() {

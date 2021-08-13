@@ -7,7 +7,7 @@
 #define RENDERER_OBJECT_TYPE_3D_COLOR 2
 #define RENDERER_OBJECT_TYPE_3D_TEXTURE 3
 
-#include "../../utils/texture.h"
+#include "../../structs/texture.h"
 
 struct SparkRendererObject {
     int type;

@@ -1,10 +1,10 @@
 #include "macros/language.h"
 #include "io/io.h"
 
-#include "utils/color.h"
-#include "utils/vector_2.h"
-#include "utils/texture.h"
-#include "utils/scene.h"
+#include "structs/color.h"
+#include "structs/vector_2.h"
+#include "structs/texture.h"
+#include "structs/scene.h"
 
 #include "gameobjects/gameobject.h"
 #include "components/component.h"

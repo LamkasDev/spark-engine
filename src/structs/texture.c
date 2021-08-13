@@ -1,5 +1,5 @@
-#include "hashmap_utils.h"
 #include "../components/component_data.h"
+#include "../utils/hashmap_utils.h"
 
 SparkTexture sparkCreateTexture(char* name) {
     int filter = GL_NEAREST;

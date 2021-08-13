@@ -2,8 +2,8 @@
 #include "shaders/shader.h"
 #include "2D/2D_utils.h"
 #include "3D/3D_utils.h"
+#include "../structs/scene.h"
 #include "../utils/hashmap_utils.h"
-#include "../utils/scene.h"
 #include "../utils/math.h"
 
 void sparkSetupWindow(SparkRenderer* renderer) {

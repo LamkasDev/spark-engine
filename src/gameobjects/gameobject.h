@@ -1,7 +1,7 @@
 #ifndef GAMEOBJECT_H_INCLUDED
 #define GAMEOBJECT_H_INCLUDED
 
-#include "../utils/vector_3.h"
+#include "../structs/vector_3.h"
 #include "../components/component.h"
 
 struct SparkGameObject {
