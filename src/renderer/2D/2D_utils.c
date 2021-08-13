@@ -2,8 +2,11 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
     int ww = renderer->ww;
     int wh = renderer->wh;
 
-    SparkComponentData* shapeData = hashmap_get(component->data, &(SparkComponentData){ .key = "shape" });
+    SparkComponentData* materialData = hashmap_get(component->data, &(SparkComponentData){ .key = "material" });
+    SparkMaterial* material = materialData->data;
+    SparkComponentData* shapeData = hashmap_get(material->data, &(SparkComponentData){ .key = "shape" });
     int* shape = shapeData->data;
+
     SparkComponentData* sizeData = hashmap_get(component->data, &(SparkComponentData){ .key = "size" });
     SparkVector2* size = sizeData->data;
 
@@ -49,9 +52,6 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
             break;
         }
     }
-
-    SparkComponentData* materialData = hashmap_get(component->data, &(SparkComponentData){ .key = "material" });
-    SparkMaterial* material = materialData->data;
 
     GLfloat* vertices = vector_create();
     for(int k = 0; k < vector_size(points); k++) {
