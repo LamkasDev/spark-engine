@@ -1,24 +1,28 @@
-void sparkInitializeShader(SparkShader* shader, char* name, const char* vertexSource, const char* fragmentSource) {
-    shader->id = glCreateProgram();
-    shader->name = name;
+SparkShader sparkCreateShader(char* name, const char* vertexSource, const char* fragmentSource) {
+    SparkShader shader = {
+        .id = glCreateProgram(),
+        .name = name
+    };
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexSource, NULL);
     glCompileShader(vertexShader);
-    sparkVerifyShader(shader, vertexShader, "VERTEX");
+    sparkVerifyShader(&shader, vertexShader, "VERTEX");
 
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
     glCompileShader(fragmentShader);
-    sparkVerifyShader(shader, fragmentShader, "FRAGMENT");
+    sparkVerifyShader(&shader, fragmentShader, "FRAGMENT");
 
-    glAttachShader(shader->id, vertexShader);
-    glAttachShader(shader->id, fragmentShader);
-    glLinkProgram(shader->id);
-    sparkVerifyShader(shader, shader->id, "PROGRAM");
+    glAttachShader(shader.id, vertexShader);
+    glAttachShader(shader.id, fragmentShader);
+    glLinkProgram(shader.id);
+    sparkVerifyShader(&shader, shader.id, "PROGRAM");
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+    return shader;
 }
 
 void sparkActivateShader(SparkShader* shader) {
