@@ -5,6 +5,7 @@
 #include "../structs/scene.h"
 #include "../utils/hashmap_utils.h"
 #include "../utils/math.h"
+#include "../utils/print.h"
 
 void sparkSetupWindow(SparkRenderer* renderer) {
     glfwInit();

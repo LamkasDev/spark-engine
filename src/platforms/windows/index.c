@@ -33,6 +33,7 @@
 #include "../../structs/vector_3.c"
 #include "../../utils/hashmap_utils.c"
 #include "../../utils/math.c"
+#include "../../utils/print.c"
 
 int main() {
     run();
