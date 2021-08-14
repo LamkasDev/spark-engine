@@ -3,5 +3,6 @@
 
 typedef GLfloat SparkVec4[4];
 typedef SparkVec4 SparkMat4[4];
+char* sparkGenerateUUID();
 
 #endif

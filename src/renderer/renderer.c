@@ -35,31 +35,14 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     renderer->window = window;
 }
 
-void sparkCompileShaders(SparkRenderer* renderer) {
+SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath) {
     int size;
-    const unsigned char* colorVertexShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_vertex.shader", true, &size);
-    const unsigned char* colorFragmentShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_fragment.shader", true, &size);
+    const unsigned char* colorVertexShaderSource = sparkReadFile(vertexPath, true, &size);
+    const unsigned char* colorFragmentShaderSource = sparkReadFile(fragmentPath, true, &size);
 
-    SparkShader colorShader0 = sparkCreateShader("2DColor", colorVertexShaderSource0, colorFragmentShaderSource0);
-    hashmap_set(renderer->shaders, &colorShader0);
-
-    const unsigned char* textureVertexShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_vertex.shader", true, &size);
-    const unsigned char* textureFragmentShaderSource0 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_fragment.shader", true, &size);
-
-    SparkShader textureShader0 = sparkCreateShader("2DTexture", textureVertexShaderSource0, textureFragmentShaderSource0);
-    hashmap_set(renderer->shaders, &textureShader0);
-
-    const unsigned char* colorVertexShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_vertex.shader", true, &size);
-    const unsigned char* colorFragmentShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_fragment.shader", true, &size);
-
-    SparkShader colorShader1 = sparkCreateShader("3DColor", colorVertexShaderSource1, colorFragmentShaderSource1);
-    hashmap_set(renderer->shaders, &colorShader1);
-
-    const unsigned char* textureVertexShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_vertex.shader", true, &size);
-    const unsigned char* textureFragmentShaderSource1 = sparkReadFile("D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_fragment.shader", true, &size);
-
-    SparkShader textureShader1 = sparkCreateShader("3DTexture", textureVertexShaderSource1, textureFragmentShaderSource1);
-    hashmap_set(renderer->shaders, &textureShader1);
+    SparkShader shader = sparkCreateShader(name, colorVertexShaderSource, colorFragmentShaderSource);
+    hashmap_set(renderer->shaders, &shader);
+    return shader;
 }
 
 void sparkOnWindowResize(GLFWwindow* window, int ww, int wh) {

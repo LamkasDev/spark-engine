@@ -1,6 +1,8 @@
 SparkShader sparkCreateShader(char* name, const char* vertexSource, const char* fragmentSource) {
+    char* uuid = sparkGenerateUUID();
     SparkShader shader = {
         .id = glCreateProgram(),
+        .uuid = *uuid,
         .name = name
     };
 

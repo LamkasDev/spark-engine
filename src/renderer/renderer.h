@@ -28,7 +28,7 @@ struct SparkRenderer {
 };
 typedef struct SparkRenderer SparkRenderer;
 void sparkSetupWindow(SparkRenderer* renderer);
-void sparkCompileShaders(SparkRenderer* renderer);
+SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath);
 void sparkOnWindowResize(GLFWwindow* window, int w, int h);
 void sparkCreateRendererObjects(SparkRenderer* renderer);
 void sparkRender(SparkRenderer* renderer);

@@ -2,10 +2,12 @@
 #include "../utils/hashmap_utils.h"
 
 SparkTexture sparkCreateTexture(char* name) {
+    char* uuid = sparkGenerateUUID();
     int filter = GL_NEAREST;
     int wrap = RENDERER_SHAPE_QUAD;
 
     SparkTexture texture = {
+        .uuid = *uuid,
         .name = name,
         .options = hashmap_new(sizeof(SparkComponentData), 0, 0, 0, sparkHasmapComponentHash, sparkHashmapComponentCompare, NULL)
     };

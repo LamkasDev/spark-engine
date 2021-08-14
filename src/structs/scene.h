@@ -4,6 +4,7 @@
 #include "../gameobjects/gameobject.h"
 
 struct SparkScene {
+    char uuid[32];
     char* name;
     SparkGameObject* gameObjects;
 };

@@ -3,6 +3,8 @@
 
 struct SparkShader {
     GLuint id;
+    
+    char uuid[32];
     char* name;
 };
 typedef struct SparkShader SparkShader;

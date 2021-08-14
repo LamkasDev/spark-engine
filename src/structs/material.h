@@ -4,7 +4,7 @@
 #include "../renderer/shaders/shader.h"
 
 struct SparkMaterial {
-    GLuint id;
+    char uuid[32];
     char* name;
     hashmap data;
 };

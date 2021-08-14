@@ -38,13 +38,10 @@ void run() {
     clock_t begin_1 = clock();
     
     /* Compile shaders */
-    sparkCompileShaders(&renderer);
-
-    /* [temporary] Get shaders */
-    SparkShader* colorShader0 = hashmap_get(renderer.shaders, &(SparkShader){ .name = "2DColor" });
-    SparkShader* textureShader0 = hashmap_get(renderer.shaders, &(SparkShader){ .name = "2DTexture" });
-    SparkShader* colorShader1 = hashmap_get(renderer.shaders, &(SparkShader){ .name = "3DColor" });
-    SparkShader* textureShader1 = hashmap_get(renderer.shaders, &(SparkShader){ .name = "3DTexture" });
+    SparkShader colorShader0 = sparkCompileShader(&renderer, "2DColor", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_fragment.shader");
+    SparkShader textureShader0 = sparkCompileShader(&renderer, "2DTexture", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_fragment.shader");
+    SparkShader colorShader1 = sparkCompileShader(&renderer, "3DColor", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_fragment.shader");
+    SparkShader textureShader1 = sparkCompileShader(&renderer, "3DTexture", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_fragment.shader");
 
     clock_t end_1 = clock();
     double elapsed_1 = (double)(end_1 - begin_1) / CLOCKS_PER_SEC;
@@ -69,22 +66,22 @@ void run() {
     SparkVector2 sizes[] = { { .x = 100.0f, .y = 100.0f } };
     float borders[] = { 0.3f };
 
-    SparkMaterial material_0 = sparkCreateMaterial("Color 2D", colorShader0);
+    SparkMaterial material_0 = sparkCreateMaterial("Color 2D", &colorShader0);
     hashmap_set(material_0.data, &(SparkComponentData){ .key = "color", .data = &colors[0] });
     hashmap_set(material_0.data, &(SparkComponentData){ .key = "shape", .data = &shapes[0] });
     hashmap_set(renderer.materials, &material_0);
 
-    SparkMaterial material_1 = sparkCreateMaterial("Texture 2D", textureShader0);
+    SparkMaterial material_1 = sparkCreateMaterial("Texture 2D", &textureShader0);
     hashmap_set(material_1.data, &(SparkComponentData){ .key = "texture", .data = &texture_0 });
     hashmap_set(material_1.data, &(SparkComponentData){ .key = "shape", .data = &shapes[0] });
     hashmap_set(renderer.materials, &material_1);
 
-    SparkMaterial material_2 = sparkCreateMaterial("Color 3D", colorShader1);
+    SparkMaterial material_2 = sparkCreateMaterial("Color 3D", &colorShader1);
     hashmap_set(material_2.data, &(SparkComponentData){ .key = "color", .data = &colors[0] });
     hashmap_set(material_2.data, &(SparkComponentData){ .key = "shape", .data = &shapes[0] });
     hashmap_set(renderer.materials, &material_2);
 
-    SparkMaterial material_3 = sparkCreateMaterial("Texture 3D", textureShader1);
+    SparkMaterial material_3 = sparkCreateMaterial("Texture 3D", &textureShader1);
     hashmap_set(material_3.data, &(SparkComponentData){ .key = "texture", .data = &texture_0 });
     hashmap_set(material_3.data, &(SparkComponentData){ .key = "shape", .data = &shapes[0] });
     hashmap_set(renderer.materials, &material_3);

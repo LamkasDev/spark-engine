@@ -3,6 +3,8 @@
 
 struct SparkTexture {
     GLuint id;
+    
+    char uuid[32];
     char* name;
     void* options;
 };

@@ -2,7 +2,9 @@
 #include "../utils/hashmap_utils.h"
 
 SparkMaterial sparkCreateMaterial(char* name, SparkShader* shader) {
+    char* uuid = sparkGenerateUUID();
     SparkMaterial material = {
+        .uuid = *uuid,
         .name = name,
         .data = hashmap_new(sizeof(SparkComponentData), 0, 0, 0, sparkHasmapComponentHash, sparkHashmapComponentCompare, NULL)
     };
