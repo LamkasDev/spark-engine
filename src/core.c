@@ -67,7 +67,7 @@ void run() {
     SparkColor colors[] = { { .r=1.0f, .g=1.0f, .b=1.0f, .a=1.0f } };
     int shapes[] = { RENDERER_SHAPE_QUAD };
     SparkVector2 sizes[] = { { .x = 100.0f, .y = 100.0f } };
-    float borders[] = { 0.5f };
+    float borders[] = { 0.3f };
 
     SparkMaterial material_0 = sparkCreateMaterial("Color 2D", colorShader0);
     hashmap_set(material_0.data, &(SparkComponentData){ .key = "color", .data = &colors[0] });
