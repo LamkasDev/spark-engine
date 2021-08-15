@@ -38,7 +38,8 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
                 GLfloat twicePi = 2.0f * GLM_PI;
 
                 float* border = borderData->data;
-                GLfloat borderRad = ySize * (*border);
+                GLfloat xBorderRad = xSize * (*border);
+                GLfloat yBorderRad = ySize * (*border);
                 GLfloat x = 0.0f;
                 GLfloat y = 0.0f;
 
@@ -50,49 +51,49 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
                 SparkVector2 p1 = { .x = -1.0f + xPos + (size->x / ww), .y = 1.0f - yPos - ySize };
                 vector_add(&points, p1);
                 /* Border (Bottom Right) */
-                x = -1.0f + xPos + xSize - borderRad;
-                y = 1.0f - yPos - ySize + borderRad;
+                x = -1.0f + xPos + xSize - xBorderRad;
+                y = 1.0f - yPos - ySize + yBorderRad;
                 for(int k = RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_0 * 3; k < RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1; k++) {
-                    SparkVector2 p = { .x = x + (borderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (borderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
+                    SparkVector2 p = { .x = x + (xBorderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (yBorderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
                     vector_add(&points, p);
                 }
-                SparkVector2 p1B = { .x = x + borderRad, .y = y };
+                SparkVector2 p1B = { .x = x + xBorderRad, .y = y };
                 vector_add(&points, p1B);
                 /* Point (Right Center) */
                 SparkVector2 p2 = { .x = -1.0f + xPos + xSize, .y = 1.0f - yPos - (size->y / wh) };
                 vector_add(&points, p2);
                 /* Border (Top Right) */
-                x = -1.0f + xPos + xSize - borderRad;
-                y = 1.0f - yPos - borderRad;
+                x = -1.0f + xPos + xSize - xBorderRad;
+                y = 1.0f - yPos - yBorderRad;
                 for(int k = 0; k < RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_0; k++) {
-                    SparkVector2 p = { .x = x + (borderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (borderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
+                    SparkVector2 p = { .x = x + (xBorderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (yBorderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
                     vector_add(&points, p);
                 }
-                //SparkVector2 p2B = { .x = x, .y = y + borderRad };
-                //vector_add(&points, p2B);
+                SparkVector2 p2B = { .x = x, .y = y + yBorderRad };
+                vector_add(&points, p2B);
                 /* Point (Top Center) */
                 SparkVector2 p3 = { .x = -1.0f + xPos + (size->x / ww), .y = 1.0f - yPos };
                 vector_add(&points, p3);
                 /* Border (Top Left) */
-                x = -1.0f + xPos + borderRad;
-                y = 1.0f - yPos - borderRad;
+                x = -1.0f + xPos + xBorderRad;
+                y = 1.0f - yPos - yBorderRad;
                 for(int k = RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_0 * 1; k < RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_0 * 2; k++) {
-                    SparkVector2 p = { .x = x + (borderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (borderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
+                    SparkVector2 p = { .x = x + (xBorderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (yBorderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
                     vector_add(&points, p);
                 }
-                SparkVector2 p3B = { .x = x - borderRad, .y = y };
+                SparkVector2 p3B = { .x = x - xBorderRad, .y = y };
                 vector_add(&points, p3B);
                 /* Point (Left Center) */
                 SparkVector2 p4 = { .x = -1.0f + xPos, .y = 1.0f - yPos - (size->y / wh) };
                 vector_add(&points, p4);
                 /* Border (Bottom Left) */
-                x = -1.0f + xPos + borderRad;
-                y = 1.0f - yPos - ySize + borderRad;
+                x = -1.0f + xPos + xBorderRad;
+                y = 1.0f - yPos - ySize + yBorderRad;
                 for(int k = RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_0 * 2; k < RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_0 * 3; k++) {
-                    SparkVector2 p = { .x = x + (borderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (borderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
+                    SparkVector2 p = { .x = x + (xBorderRad * cos(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)), .y = y + (yBorderRad * sin(k * twicePi / RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1)) };
                     vector_add(&points, p);
                 }
-                SparkVector2 p4B = { .x = x, .y = y - borderRad };
+                SparkVector2 p4B = { .x = x, .y = y - yBorderRad };
                 vector_add(&points, p4B);
 
                 //sparkPrintPoints(points);
@@ -163,13 +164,13 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
                 vector_add(&indices, 3);
                 vector_add(&indices, 2);
             } else {
-               for(int k = 0; k < RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1 + 6; k++) {
+               for(int k = 0; k < RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1 + 7; k++) {
                     vector_add(&indices, 0);
                     vector_add(&indices, k + 1);
                     vector_add(&indices, k + 2);
                 }
                 vector_add(&indices, 0);
-                vector_add(&indices, RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1 + 7);
+                vector_add(&indices, RENDERER_BORDER_CIRCLE_TRIANGLE_AMMOUNT_1 + 8);
                 vector_add(&indices, 1);
             }
 
