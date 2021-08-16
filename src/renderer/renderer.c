@@ -50,7 +50,8 @@ void sparkOnWindowResize(GLFWwindow* window, int ww, int wh) {
 }
 
 void sparkCreateRendererObjects(SparkRenderer* renderer) {
-    glfwGetWindowSize(renderer->window, &renderer->ww, &renderer->wh);
+    /* Cleanup previous objects */
+    sparkDeleteRendererObjects(renderer);
 
     /* Create renderer objects */
     renderer->rendererObjects = vector_create();
@@ -106,6 +107,13 @@ void sparkCreateRendererObjects(SparkRenderer* renderer) {
     }
 }
 
+void sparkDeleteRendererObjects(SparkRenderer* renderer) {
+    for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
+        SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
+        sparkDeleteRendererObject(rendererObject);
+    }
+}
+
 void sparkRender(SparkRenderer* renderer) {
     /* [temporary] Create model matrices */
     SparkMat4 model, view, proj;
@@ -123,13 +131,11 @@ void sparkRender(SparkRenderer* renderer) {
     float targetDeltaTime = targetFPS < 0.0f ? 0.0f : 1.00f / targetFPS;
     clock_t clock_0 = clock();
 
-    /* Create renderer objects */
-    sparkCreateRendererObjects(renderer);
-
     /* Main render loop */
     while(!glfwWindowShouldClose(renderer->window)) {
         float deltaTime = ((clock() - clock_0) / 1000.0f);
         if(deltaTime > targetDeltaTime) {
+            glfwGetWindowSize(renderer->window, &renderer->ww, &renderer->wh);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             /* speeeen */
@@ -196,12 +202,10 @@ void sparkRender(SparkRenderer* renderer) {
         glfwPollEvents();
     }
 
-    for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
-        SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
-        sparkDeleteRendererObject(rendererObject);
-    }
+    sparkDeleteRendererObjects(renderer);
     hashmap_scan(renderer->shaders, sparkDeleteShaderIter, NULL);
     /* TODO: Delete all textures */
+    /* TODO: Delete all materials */
 
     glfwDestroyWindow(renderer->window);
     glfwTerminate();
@@ -210,5 +214,5 @@ void sparkRender(SparkRenderer* renderer) {
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene) {
     renderer->scene = scene;
 
-    /* TODO: this is the place where renderer objects will be created */
+    sparkCreateRendererObjects(renderer);
 }

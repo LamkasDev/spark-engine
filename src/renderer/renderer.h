@@ -31,6 +31,7 @@ void sparkSetupWindow(SparkRenderer* renderer);
 SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath);
 void sparkOnWindowResize(GLFWwindow* window, int w, int h);
 void sparkCreateRendererObjects(SparkRenderer* renderer);
+void sparkDeleteRendererObjects(SparkRenderer* renderer);
 void sparkRender(SparkRenderer* renderer);
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene);
 
