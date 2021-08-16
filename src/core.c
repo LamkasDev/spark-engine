@@ -50,8 +50,8 @@ void run() {
     clock_t begin_2 = clock();
     
     /* Load textures */
-    SparkTexture texture_0 = sparkCreateTexture("chocola");
-    sparkLoadTexture(&texture_0, "D:\\Coding\\spark-engine\\build_src\\textures\\chocola.png");
+    SparkTexture texture_0 = sparkCreateTexture("dvd");
+    sparkLoadTexture(&texture_0, "D:\\Coding\\spark-engine\\build_src\\textures\\dvd.png");
     hashmap_set(renderer.textures, &texture_0);
 
     clock_t end_2 = clock();
@@ -63,7 +63,7 @@ void run() {
     /* Create Materials */
     SparkColor colors[] = { { .r=1.0f, .g=1.0f, .b=1.0f, .a=1.0f } };
     int shapes[] = { RENDERER_SHAPE_QUAD };
-    SparkVector2 sizes[] = { { .x = 100.0f, .y = 100.0f } };
+    SparkVector2 sizes[] = { { .x = 180.0f, .y = 180.0f } };
     float borders[] = { 0.3f };
 
     SparkMaterial material_0 = sparkCreateMaterial("Color 2D", &colorShader0);
@@ -96,33 +96,11 @@ void run() {
     SparkScene scene = sparkCreateScene("Default");
 
     SparkGameObject gameObject_0 = sparkCreateGameObject();
-    SparkComponent* component_0 = sparkCreateComponent(&gameObject_0, COMPONENT_TYPE_2D_RENDERER);
+    SparkComponent* component_0 = sparkCreateComponent(&gameObject_0, COMPONENT_TYPE_2D_TEXTURE_RENDERER);
     gameObject_0.pos.y = 0.0f;
     hashmap_set(component_0->data, &(SparkComponentData){ .key = "size", .data = &sizes[0] });
-    hashmap_set(component_0->data, &(SparkComponentData){ .key = "border", .data = &borders[0] });
-    hashmap_set(component_0->data, &(SparkComponentData){ .key = "material", .data = &material_0 });
+    hashmap_set(component_0->data, &(SparkComponentData){ .key = "material", .data = &material_1 });
     vector_add(&scene.gameObjects, gameObject_0);
-
-    /*SparkGameObject gameObject_1 = sparkCreateGameObject();
-    SparkComponent* component_1 = sparkCreateComponent(&gameObject_1, COMPONENT_TYPE_2D_RENDERER);
-    gameObject_1.pos.y = 100.0f;
-    hashmap_set(component_1->data, &(SparkComponentData){ .key = "size", .data = &sizes[0] });
-    hashmap_set(component_1->data, &(SparkComponentData){ .key = "material", .data = &material_0 });
-    vector_add(&scene.gameObjects, gameObject_1);
-
-    SparkGameObject gameObject_2 = sparkCreateGameObject();
-    SparkComponent* component_2 = sparkCreateComponent(&gameObject_2, COMPONENT_TYPE_2D_RENDERER);
-    gameObject_2.pos.y = 200.0f;
-    hashmap_set(component_2->data, &(SparkComponentData){ .key = "size", .data = &sizes[0] });
-    hashmap_set(component_2->data, &(SparkComponentData){ .key = "material", .data = &material_0 });
-    vector_add(&scene.gameObjects, gameObject_2);
-
-    SparkGameObject gameObject_t = sparkCreateGameObject();
-    SparkComponent* component_t = sparkCreateComponent(&gameObject_t, COMPONENT_TYPE_2D_TEXTURE_RENDERER);
-    gameObject_t.pos.x = 100.0f;
-    hashmap_set(component_t->data, &(SparkComponentData){ .key = "size", .data = &sizes[0] });
-    hashmap_set(component_t->data, &(SparkComponentData){ .key = "material", .data = &material_1 });
-    vector_add(&scene.gameObjects, gameObject_t);*/
 
     sparkLoadScene(&renderer, &scene);
 

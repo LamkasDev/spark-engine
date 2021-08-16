@@ -10,7 +10,8 @@
 #include "../../structs/material.h"
 
 struct SparkRendererObject {
-    int type;
+    SparkGameObject* gameObject;
+    SparkComponent* component;
 
     GLfloat* vertices;
     GLuint* indices;
@@ -18,19 +19,18 @@ struct SparkRendererObject {
     GLuint VBO;
     GLuint EBO;
     int drawType;
-
-    SparkMaterial* material;
 };
 typedef struct SparkRendererObject SparkRendererObject;
 
-void sparkBindRendererObject(SparkRendererObject* rendererObject);
-void sparkUnbindRendererObject();
-void sparkDeleteRendererObject(SparkRendererObject* rendererObject);
-
 void sparkGenerateBuffersInRendererObject(SparkRendererObject* rendererObject);
-void sparkBufferDataInRendererObject(SparkRendererObject* rendererObject);
 void sparkLinkAttributesInRendererObject(SparkRendererObject* rendererObject, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 
+void sparkBindRendererObject(SparkRendererObject* rendererObject);
+void sparkUnbindRendererObject();
+void sparkBufferDataInRendererObject(SparkRendererObject* rendererObject);
+
+void sparkInitializeRendererObject(SparkRendererObject* rendererObject);
 void sparkDrawRendererObject(SparkRendererObject* rendererObject);
+void sparkDeleteRendererObject(SparkRendererObject* rendererObject);
 
 #endif

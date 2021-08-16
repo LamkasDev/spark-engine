@@ -1,26 +1,35 @@
 SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGameObject* gameObject, SparkComponent* component) {
+    SparkRendererObject rendererObject = {
+        .gameObject = gameObject,
+        .component = component,
+        .indices = vector_create(),
+        .vertices = vector_create()
+    };
+
+    return rendererObject;
+}
+
+void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* rendererObject) {
     int ww = renderer->ww;
     int wh = renderer->wh;
 
-    SparkComponentData* materialData = hashmap_get(component->data, &(SparkComponentData){ .key = "material" });
+    SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
     SparkMaterial* material = materialData->data;
     SparkComponentData* shapeData = hashmap_get(material->data, &(SparkComponentData){ .key = "shape" });
     int* shape = shapeData->data;
-
-    SparkComponentData* sizeData = hashmap_get(component->data, &(SparkComponentData){ .key = "size" });
+    SparkComponentData* sizeData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "size" });
     SparkVector2* size = sizeData->data;
 
-    SparkRendererObject rendererObject;
     SparkVector2* points = vector_create();
     switch(*shape) {
         case RENDERER_SHAPE_QUAD:
         case RENDERER_SHAPE_EMPTY_QUAD: {
-            GLfloat xPos = (gameObject->pos.x / ww) * 2.0f;
-            GLfloat yPos = (gameObject->pos.y / wh) * 2.0f;
+            GLfloat xPos = (rendererObject->gameObject->pos.x / ww) * 2.0f;
+            GLfloat yPos = (rendererObject->gameObject->pos.y / wh) * 2.0f;
             GLfloat xSize = (size->x / ww) * 2.0f;
             GLfloat ySize = (size->y / wh) * 2.0f;
 
-            SparkComponentData* borderData = hashmap_get(component->data, &(SparkComponentData){ .key = "border" });
+            SparkComponentData* borderData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "border" });
             if(borderData == NULL) {
                 /* Point (Top Left) */
                 SparkVector2 p1 = { .x = -1.0f + xPos, .y = 1.0f - yPos };
@@ -95,8 +104,6 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
                 }
                 SparkVector2 p4B = { .x = x, .y = y - yBorderRad };
                 vector_add(&points, p4B);
-
-                //sparkPrintPoints(points);
             }
             break;
         }
@@ -109,7 +116,7 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
         vector_add(&vertices, point->y);
         vector_add(&vertices, 0.0f);
 
-        switch(component->type) {
+        switch(rendererObject->component->type) {
             case COMPONENT_TYPE_2D_RENDERER: {
                 SparkComponentData* colorData = hashmap_get(material->data, &(SparkComponentData){ .key = "color" });
                 SparkColor* color = colorData->data;
@@ -155,7 +162,7 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
     GLuint* indices = vector_create();
     switch(*shape) {
         case RENDERER_SHAPE_QUAD: {
-            SparkComponentData* borderData = hashmap_get(component->data, &(SparkComponentData){ .key = "border" });
+            SparkComponentData* borderData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "border" });
             if(borderData == NULL) {
                 vector_add(&indices, 0);
                 vector_add(&indices, 1);
@@ -174,7 +181,7 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
                 vector_add(&indices, 1);
             }
 
-            rendererObject.drawType = GL_TRIANGLES;
+            rendererObject->drawType = GL_TRIANGLES;
             break;
         }
 
@@ -185,26 +192,15 @@ SparkRendererObject sparkCreateRendererObject2D(SparkRenderer* renderer, SparkGa
             vector_add(&indices, 3);
             vector_add(&indices, 0);
 
-            rendererObject.drawType = GL_LINE_LOOP;
+            rendererObject->drawType = GL_LINE_LOOP;
             break;
         }
     }
 
-    rendererObject.vertices = vertices;
-    rendererObject.indices = indices;
-    rendererObject.material = material;
+    vector_free(points);
+    vector_free(rendererObject->vertices);
+    vector_free(rendererObject->indices);
 
-    switch(component->type) {
-        case COMPONENT_TYPE_2D_RENDERER: {
-            rendererObject.type = RENDERER_OBJECT_TYPE_2D_COLOR;
-            break;
-        }
-
-        case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
-            rendererObject.type = RENDERER_OBJECT_TYPE_2D_TEXTURE;
-            break;
-        }
-    }
-    
-    return rendererObject;
+    rendererObject->vertices = vertices;
+    rendererObject->indices = indices;
 }

@@ -50,61 +50,68 @@ void sparkOnWindowResize(GLFWwindow* window, int ww, int wh) {
 }
 
 void sparkCreateRendererObjects(SparkRenderer* renderer) {
-    /* Cleanup previous objects */
     sparkDeleteRendererObjects(renderer);
 
-    /* Create renderer objects */
-    renderer->rendererObjects = vector_create();
     int numOfGameObjects = vector_size(renderer->scene->gameObjects);
     for(int i = 0; i < numOfGameObjects; i++) {
         SparkGameObject* gameObject = &renderer->scene->gameObjects[i];
+        sparkCreateRendererObject(renderer, gameObject);    
+    }
+}
 
-        int numOfComponents = vector_size(gameObject->components);
-        for(int j = 0; j < numOfComponents; j++) {
-            SparkComponent* component = &gameObject->components[j];
+void sparkCreateRendererObject(SparkRenderer* renderer, SparkGameObject* gameObject) {
+    int numOfComponents = vector_size(gameObject->components);
+    for(int j = 0; j < numOfComponents; j++) {
+        SparkComponent* component = &gameObject->components[j];
 
-            switch(component->type) {
-                case COMPONENT_TYPE_2D_RENDERER:
-                case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
-                    SparkRendererObject rendererObject = sparkCreateRendererObject2D(renderer, gameObject, component);
-                    vector_add(&renderer->rendererObjects, rendererObject);
-                }
+        switch(component->type) {
+            case COMPONENT_TYPE_2D_RENDERER:
+            case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
+                SparkRendererObject rendererObject = sparkCreateRendererObject2D(renderer, gameObject, component);
+                sparkInitializeRendererObject(&rendererObject);
+                sparkUpdateRendererObject(renderer, &rendererObject);
+                
+                vector_add(&renderer->rendererObjects, rendererObject);
+                break;
+            }
 
-                case COMPONENT_TYPE_3D_RENDERER:
-                case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
-                    SparkRendererObject rendererObject = sparkCreateRendererObject3D(renderer, gameObject, component);
-                    //vector_add(&renderer->rendererObjects, rendererObject);
-                }
+            case COMPONENT_TYPE_3D_RENDERER:
+            case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+                SparkRendererObject rendererObject = sparkCreateRendererObject3D(renderer, gameObject, component);
+                sparkInitializeRendererObject(&rendererObject);
+                sparkUpdateRendererObject(renderer, &rendererObject);
+
+                vector_add(&renderer->rendererObjects, rendererObject);
+                break;
             }
         }
     }
+}
 
-    /* Generate buffers for each rendered object, buffer their data and set their vertex attributes */
-    /* TODO: move this somewhere else */
+void sparkUpdateRendererObjects(SparkRenderer* renderer) {
     for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
         SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
-        sparkGenerateBuffersInRendererObject(rendererObject);
-        sparkBindRendererObject(rendererObject);
-        sparkBufferDataInRendererObject(rendererObject);
+        sparkUpdateRendererObject(renderer, rendererObject);
+    }
+}
 
-        switch(rendererObject->type) {
-            case RENDERER_OBJECT_TYPE_2D_COLOR:
-            case RENDERER_OBJECT_TYPE_3D_COLOR: {
-                sparkLinkAttributesInRendererObject(rendererObject, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-                sparkLinkAttributesInRendererObject(rendererObject, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-                break;
-            }
-
-            case RENDERER_OBJECT_TYPE_2D_TEXTURE:
-            case RENDERER_OBJECT_TYPE_3D_TEXTURE: {
-                sparkLinkAttributesInRendererObject(rendererObject, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
-                sparkLinkAttributesInRendererObject(rendererObject, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-                break;
-            }
+void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject) {
+    sparkBindRendererObject(rendererObject);
+    switch(rendererObject->component->type) {
+        case COMPONENT_TYPE_2D_RENDERER:
+        case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
+            sparkUpdateRendererObject2D(renderer, rendererObject);
+            break;
         }
 
-        sparkUnbindRendererObject();
+        case COMPONENT_TYPE_3D_RENDERER:
+        case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+            sparkUpdateRendererObject3D(renderer, rendererObject);
+            break;
+        }
     }
+    sparkBufferDataInRendererObject(rendererObject);
+    sparkUnbindRendererObject();
 }
 
 void sparkDeleteRendererObjects(SparkRenderer* renderer) {
@@ -112,6 +119,8 @@ void sparkDeleteRendererObjects(SparkRenderer* renderer) {
         SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
         sparkDeleteRendererObject(rendererObject);
     }
+    vector_free(renderer->rendererObjects);
+    renderer->rendererObjects = vector_create();
 }
 
 void sparkRender(SparkRenderer* renderer) {
@@ -131,6 +140,10 @@ void sparkRender(SparkRenderer* renderer) {
     float targetDeltaTime = targetFPS < 0.0f ? 0.0f : 1.00f / targetFPS;
     clock_t clock_0 = clock();
 
+    float bounceValue = 0.0f;
+    float bounceX = 3.0f;
+    float bounceY = 3.0f;
+
     /* Main render loop */
     while(!glfwWindowShouldClose(renderer->window)) {
         float deltaTime = ((clock() - clock_0) / 1000.0f);
@@ -138,20 +151,36 @@ void sparkRender(SparkRenderer* renderer) {
             glfwGetWindowSize(renderer->window, &renderer->ww, &renderer->wh);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            /* speeeen */
-            glm_rotate(model, glm_rad(5.0f), rotVec);
+            /* stupid bouncing dvd thing */
+            SparkComponentData* bounceSizeData = hashmap_get(renderer->scene->gameObjects[0].components[0].data, &(SparkComponentData){ .key = "size" });
+            SparkVector2* bounceSize = bounceSizeData->data;
+            renderer->scene->gameObjects[0].pos.x += bounceX;
+            renderer->scene->gameObjects[0].pos.y += bounceY;
+            if(renderer->scene->gameObjects[0].pos.x < 0 || renderer->scene->gameObjects[0].pos.x + bounceSize->x > renderer->ww) {
+                bounceX = -bounceX;
+                bounceY = rand() % 2 == 0 ? -bounceY : bounceY;
+            } else if(renderer->scene->gameObjects[0].pos.y < 0 || renderer->scene->gameObjects[0].pos.y + bounceSize->y > renderer->wh) {
+                bounceY = -bounceY;
+                bounceX = rand() % 2 == 0 ? -bounceX : bounceX;
+            }
+
+            /* Update all renderer objects */
+            sparkUpdateRendererObjects(renderer);
 
             /* Draw all renderer objects */
+            /* TODO: move this somewhere else */
             for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
                 SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
 
-                SparkComponentData* shaderData = hashmap_get(rendererObject->material->data, &(SparkComponentData){ .key = "shader" });
+                SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
+                SparkMaterial* material = materialData->data;
+                SparkComponentData* shaderData = hashmap_get(material->data, &(SparkComponentData){ .key = "shader" });
                 SparkShader* shader = shaderData->data;
 
                 sparkBindRendererObject(rendererObject);
                 sparkActivateShader(shader);
-                switch(rendererObject->type) {
-                    case RENDERER_OBJECT_TYPE_3D_COLOR: {
+                switch(rendererObject->component->type) {
+                    case COMPONENT_TYPE_3D_RENDERER: {
                         GLuint modelLoc0 = glGetUniformLocation(shader->id, "model");
                         glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
                         GLuint viewLoc0 = glGetUniformLocation(shader->id, "view");
@@ -161,8 +190,8 @@ void sparkRender(SparkRenderer* renderer) {
                         break;
                     }
 
-                    case RENDERER_OBJECT_TYPE_2D_TEXTURE: {
-                        SparkComponentData* textureData = hashmap_get(rendererObject->material->data, &(SparkComponentData){ .key = "texture" });
+                    case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
+                        SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
                         SparkTexture* texture = textureData->data;
 
                         GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
@@ -172,8 +201,8 @@ void sparkRender(SparkRenderer* renderer) {
                         break;
                     }
 
-                    case RENDERER_OBJECT_TYPE_3D_TEXTURE: {
-                        SparkComponentData* textureData = hashmap_get(rendererObject->material->data, &(SparkComponentData){ .key = "texture" });
+                    case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+                        SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
                         SparkTexture* texture = textureData->data;
 
                         GLuint modelLoc1 = glGetUniformLocation(shader->id, "model");
@@ -191,7 +220,7 @@ void sparkRender(SparkRenderer* renderer) {
                     }
                 }
                 sparkDrawRendererObject(rendererObject);
-            
+
                 sparkUnbindRendererObject();
             }
 
