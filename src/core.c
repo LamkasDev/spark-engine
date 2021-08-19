@@ -14,7 +14,14 @@
 #include "renderer/renderer.h"
 
 void run() {
+    char* executablePath = sparkGetExecutablePath();
+    char* assetsPath = sparkCombinePaths(executablePath, sparkCreatePathFromString("/../../../build_src"));
+
     printf("Started Spark Engine (%s)...\n", SPARK_VERSION);
+    printf("=========\n");
+    printf("Executable path: %s\n", executablePath);
+    printf("Assets path: %s\n", assetsPath);
+    printf("=========\n");
     printf("Initializing...\n");
     clock_t begin_0 = clock();
 
@@ -28,7 +35,7 @@ void run() {
     
     int iconC;
     GLFWimage icons[1];
-    icons[0].pixels = stbi_load("D:\\Coding\\spark-engine\\build_src\\textures\\icon.png", &icons[0].width, &icons[0].height, &iconC, 0);
+    icons[0].pixels = stbi_load(sparkCombinePaths(assetsPath, sparkCreatePathFromString("/textures/icon.png")), &icons[0].width, &icons[0].height, &iconC, 0);
     glfwSetWindowIcon(renderer.window, 1, icons);
 
     clock_t end_0 = clock();
@@ -38,10 +45,10 @@ void run() {
     clock_t begin_1 = clock();
     
     /* Compile shaders */
-    SparkShader colorShader0 = sparkCompileShader(&renderer, "2DColor", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_color_fragment.shader");
-    SparkShader textureShader0 = sparkCompileShader(&renderer, "2DTexture", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\2D_tex_fragment.shader");
-    SparkShader colorShader1 = sparkCompileShader(&renderer, "3DColor", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_color_fragment.shader");
-    SparkShader textureShader1 = sparkCompileShader(&renderer, "3DTexture", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_vertex.shader", "D:\\Coding\\spark-engine\\build_src\\shaders\\3D_tex_fragment.shader");
+    SparkShader colorShader0 = sparkCompileShader(&renderer, "2DColor", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/2D_color_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/2D_color_fragment.shader")));
+    SparkShader textureShader0 = sparkCompileShader(&renderer, "2DTexture", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/2D_tex_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/2D_tex_fragment.shader")));
+    SparkShader colorShader1 = sparkCompileShader(&renderer, "3DColor", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_color_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_color_fragment.shader")));
+    SparkShader textureShader1 = sparkCompileShader(&renderer, "3DTexture", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_tex_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_tex_fragment.shader")));
 
     clock_t end_1 = clock();
     double elapsed_1 = (double)(end_1 - begin_1) / CLOCKS_PER_SEC;
@@ -51,7 +58,7 @@ void run() {
     
     /* Load textures */
     SparkTexture texture_0 = sparkCreateTexture("dvd");
-    sparkLoadTexture(&texture_0, "D:\\Coding\\spark-engine\\build_src\\textures\\dvd.png");
+    sparkLoadTexture(&texture_0, sparkCombinePaths(assetsPath, sparkCreatePathFromString("/textures/dvd.png")));
     hashmap_set(renderer.textures, &texture_0);
 
     clock_t end_2 = clock();

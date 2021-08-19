@@ -8,4 +8,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
+
+#define SPARK_OS 1
+
 #include "../index.c"
