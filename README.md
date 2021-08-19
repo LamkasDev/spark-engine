@@ -17,6 +17,13 @@
 </div>
 <hr />
 <div>
+    <h3>Features</h3>
+    <p>
+        - Basic 2D rendering
+    </p>
+</div>
+<hr />
+<div>
     <h3>Building stuffs (>w<)</h3>
     <p>
         <b>Requirements:</b><br />
@@ -28,6 +35,8 @@
         - Copy the built library named <code>build/src/libglfw3.a</code> into <code>spark-engine/libs/lib/libglfw3.a</code><br /><br />
         - Build <a href="https://github.com/recp/cglm/releases/tag/v0.8.3">CGML 0.8.3</a> (create build folder, use CMake to build Makefile, make)<br />
         - Copy the built library named <code>build/libcglm.dll.a</code> into <code>spark-engine/libs/lib/libcglm.a</code><br /><br />
+        - Build <a href="https://download.savannah.gnu.org/releases/freetype/">Freetype 2.9</a> (create build folder, use CMake to build Makefile, make)<br />
+        - Copy the built library named <code>build/libfreetype.a</code> into <code>spark-engine/libs/lib/libfreetype.a</code><br /><br />
         <b>Building the game engine:</b><br />
         - run <code>make</code> or <code>make debug</code><br />
     </p>
