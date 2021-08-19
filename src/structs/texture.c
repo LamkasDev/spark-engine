@@ -4,7 +4,7 @@
 SparkTexture sparkCreateTexture(char* name) {
     char* uuid = sparkGenerateUUID();
     int filter = GL_NEAREST;
-    int wrap = RENDERER_SHAPE_QUAD;
+    int wrap = GL_REPEAT;
 
     SparkTexture texture = {
         .uuid = *uuid,
