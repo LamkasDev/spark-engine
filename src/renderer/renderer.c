@@ -32,7 +32,10 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL);
     renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHashmapTextureHash, sparkHashmapTextureCompare, NULL);
     renderer->materials = hashmap_new(sizeof(SparkMaterial), 0, 0, 0, sparkHashmapMaterialHash, sparkHashmapMaterialCompare, NULL);
+    renderer->fonts = hashmap_new(sizeof(SparkFont), 0, 0, 0, sparkHashmapFontHash, sparkHashmapFontCompare, NULL);
     renderer->window = window;
+
+    FT_Init_FreeType(&renderer->ft);
 }
 
 SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath) {

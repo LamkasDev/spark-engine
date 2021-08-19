@@ -8,6 +8,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #define SPARK_OS 0
 #include <windows.h>

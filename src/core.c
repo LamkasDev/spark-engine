@@ -12,6 +12,7 @@
 #include "components/component_data.h"
 
 #include "renderer/renderer.h"
+#include "structs/font.h"
 
 void run() {
     char* executablePath = sparkGetExecutablePath();
@@ -53,17 +54,27 @@ void run() {
     clock_t end_1 = clock();
     double elapsed_1 = (double)(end_1 - begin_1) / CLOCKS_PER_SEC;
     printf("Compiled shaders (%i shaders in %.3fs)!\n", hashmap_count(renderer.shaders), elapsed_1);
-    printf("Loading textures...\n");
+    printf("Loading fonts...\n");
     clock_t begin_2 = clock();
+    
+    /* Load fonts */
+    SparkFont font_0 = sparkCreateFont("Arial");
+    sparkLoadFont(&renderer, &font_0, sparkCombinePaths(assetsPath, sparkCreatePathFromString("/fonts/Arial.ttf")));
+
+    clock_t end_2 = clock();
+    double elapsed_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
+    printf("Loaded fonts (%i fonts in %.3fs)!\n", hashmap_count(renderer.fonts), elapsed_1);
+    printf("Loading textures...\n");
+    clock_t begin_5 = clock();
     
     /* Load textures */
     SparkTexture texture_0 = sparkCreateTexture("dvd");
     sparkLoadTexture(&texture_0, sparkCombinePaths(assetsPath, sparkCreatePathFromString("/textures/dvd.png")));
     hashmap_set(renderer.textures, &texture_0);
 
-    clock_t end_2 = clock();
-    double elapsed_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
-    printf("Loaded textures (%i textures in %.3fs)!\n", hashmap_count(renderer.textures), elapsed_2);
+    clock_t end_5 = clock();
+    double elapsed_5 = (double)(end_5 - begin_5) / CLOCKS_PER_SEC;
+    printf("Loaded textures (%i textures in %.3fs)!\n", hashmap_count(renderer.textures), elapsed_5);
     printf("Creating materials...\n");
     clock_t begin_3 = clock();
 

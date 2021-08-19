@@ -17,11 +17,13 @@
 struct SparkRenderer {
     GLFWwindow* window;
     SparkScene* scene;
+    FT_Library ft;
 
     SparkRendererObject* rendererObjects;
     hashmap shaders;
     hashmap textures;
     hashmap materials;
+    hashmap fonts;
 
     int ww;
     int wh;

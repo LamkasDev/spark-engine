@@ -1,7 +1,7 @@
 CC=gcc
 CC_DEBUG_PREFLAGS=-I./libs/include
 CC_PREFLAGS=-I./libs/include
-CC_POSTFLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm
+CC_POSTFLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm -lfreetype
 
 CC_FILE=
 BUILD_COMMAND=

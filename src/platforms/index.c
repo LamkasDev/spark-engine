@@ -16,6 +16,7 @@
 #include "../renderer/shaders/shader.c"
 #include "../renderer/utils/renderer_object.c"
 #include "../structs/color.c"
+#include "../structs/font.c"
 #include "../structs/material.c"
 #include "../structs/scene.c"
 #include "../structs/texture.c"
