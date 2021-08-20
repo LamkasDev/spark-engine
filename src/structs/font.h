@@ -1,10 +1,13 @@
 #ifndef FONT_H_INCLUDED
 #define FONT_H_INCLUDED
 
+#include "character.h"
+
 struct SparkFont {
     char uuid[32];
     char* name;
-    FT_Face face;
+
+    hashmap characters;
 };
 typedef struct SparkFont SparkFont;
 SparkFont sparkCreateFont(char* name);

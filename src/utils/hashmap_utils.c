@@ -45,10 +45,21 @@ uint64_t sparkHashmapMaterialHash(const void *item, uint64_t seed0, uint64_t see
 int sparkHashmapFontCompare(const void *a, const void *b, void *udata) {
     const SparkFont *ia = a;
     const SparkFont *ib = b;
-    return strcmp(ia->uuid, ib->uuid);
+    return strcmp(ia->name, ib->name);
 }
 
 uint64_t sparkHashmapFontHash(const void *item, uint64_t seed0, uint64_t seed1) {
     const SparkFont *font = item;
-    return hashmap_sip(font->uuid, strlen(font->uuid), seed0, seed1);
+    return hashmap_sip(font->name, strlen(font->name), seed0, seed1);
+}
+
+int sparkHashmapCharacterCompare(const void *a, const void *b, void *udata) {
+    const SparkCharacter *ia = a;
+    const SparkCharacter *ib = b;
+    return strcmp(&ia->c, &ib->c);
+}
+
+uint64_t sparkHashmapCharacterHash(const void *item, uint64_t seed0, uint64_t seed1) {
+    const SparkCharacter *character = item;
+    return hashmap_sip(&character->c, 1, seed0, seed1);
 }

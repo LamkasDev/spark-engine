@@ -16,4 +16,7 @@ uint64_t sparkHashmapMaterialHash(const void *item, uint64_t seed0, uint64_t see
 int sparkHashmapFontCompare(const void *a, const void *b, void *udata);
 uint64_t sparkHashmapFontHash(const void *item, uint64_t seed0, uint64_t seed1);
 
+int sparkHashmapCharacterCompare(const void *a, const void *b, void *udata);
+uint64_t sparkHashmapCharacterHash(const void *item, uint64_t seed0, uint64_t seed1);
+
 #endif

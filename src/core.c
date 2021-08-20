@@ -60,6 +60,7 @@ void run() {
     /* Load fonts */
     SparkFont font_0 = sparkCreateFont("Arial");
     sparkLoadFont(&renderer, &font_0, sparkCombinePaths(assetsPath, sparkCreatePathFromString("/fonts/Arial.ttf")));
+    FT_Done_FreeType(renderer.ft);
 
     clock_t end_2 = clock();
     double elapsed_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
