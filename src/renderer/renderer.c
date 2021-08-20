@@ -1,4 +1,4 @@
-#include "utils/renderer_object.h"
+#include "utils/renderer_object_group.h"
 #include "shaders/shader.h"
 #include "2D/2D_utils.h"
 #include "3D/3D_utils.h"
@@ -28,7 +28,7 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     glfwGetWindowSize(window, &renderer->ww, &renderer->wh);
     glViewport(0, 0, renderer->ww, renderer->wh);
 
-    renderer->rendererObjects = vector_create();
+    renderer->rendererObjectGroups = vector_create();
     renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL);
     renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHashmapTextureHash, sparkHashmapTextureCompare, NULL);
     renderer->materials = hashmap_new(sizeof(SparkMaterial), 0, 0, 0, sparkHashmapMaterialHash, sparkHashmapMaterialCompare, NULL);
@@ -52,48 +52,77 @@ void sparkOnWindowResize(GLFWwindow* window, int ww, int wh) {
     glViewport(0, 0, ww, wh);
 }
 
-void sparkCreateRendererObjects(SparkRenderer* renderer) {
-    sparkDeleteRendererObjects(renderer);
+void sparkCreateAllRendererObjectGroups(SparkRenderer* renderer) {
+    sparkDeleteAllRendererObjectGroups(renderer);
 
     int numOfGameObjects = vector_size(renderer->scene->gameObjects);
     for(int i = 0; i < numOfGameObjects; i++) {
         SparkGameObject* gameObject = &renderer->scene->gameObjects[i];
-        sparkCreateRendererObject(renderer, gameObject);    
+        sparkCreateRendererObjectGroups(renderer, gameObject);
     }
 }
 
-void sparkCreateRendererObject(SparkRenderer* renderer, SparkGameObject* gameObject) {
+void sparkCreateRendererObjectGroups(SparkRenderer* renderer, SparkGameObject* gameObject) {
     int numOfComponents = vector_size(gameObject->components);
-    for(int j = 0; j < numOfComponents; j++) {
-        SparkComponent* component = &gameObject->components[j];
+    for(int i = 0; i < numOfComponents; i++) {
+        SparkComponent* component = &gameObject->components[i];
 
         switch(component->type) {
             case COMPONENT_TYPE_2D_RENDERER:
-            case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
-                SparkRendererObject rendererObject = sparkCreateRendererObject2D(renderer, gameObject, component);
-                sparkInitializeRendererObject(&rendererObject);
-                sparkUpdateRendererObject(renderer, &rendererObject);
-                
-                vector_add(&renderer->rendererObjects, rendererObject);
-                break;
-            }
-
+            case COMPONENT_TYPE_2D_TEXTURE_RENDERER:
             case COMPONENT_TYPE_3D_RENDERER:
-            case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
-                SparkRendererObject rendererObject = sparkCreateRendererObject3D(renderer, gameObject, component);
-                sparkInitializeRendererObject(&rendererObject);
-                sparkUpdateRendererObject(renderer, &rendererObject);
-
-                vector_add(&renderer->rendererObjects, rendererObject);
+            case COMPONENT_TYPE_3D_TEXTURE_RENDERER:
+            case COMPONENT_TYPE_TEXT_RENDERER: {
+                SparkRendererObjectGroup rendererObjectGroup = sparkCreateRendererObjectGroup(renderer, gameObject, component);
+                vector_add(&renderer->rendererObjectGroups, rendererObjectGroup);
                 break;
             }
         }
     }
 }
 
-void sparkUpdateRendererObjects(SparkRenderer* renderer) {
-    for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
-        SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
+SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer, SparkGameObject* gameObject, SparkComponent* component) {
+    switch(component->type) {
+        case COMPONENT_TYPE_2D_RENDERER:
+        case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
+            SparkRendererObjectGroup rendererObjectGroup = {
+                .objects = vector_create()
+            };
+
+            SparkRendererObject rendererObject = sparkCreateRendererObject2D(renderer, gameObject, component);
+            sparkInitializeRendererObject(&rendererObject);
+            sparkUpdateRendererObject(renderer, &rendererObject);
+            vector_add(&rendererObjectGroup.objects, rendererObject);
+            break;
+        }
+
+        case COMPONENT_TYPE_3D_RENDERER:
+        case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+            SparkRendererObjectGroup rendererObjectGroup = {
+                .objects = vector_create()
+            };
+
+            SparkRendererObject rendererObject = sparkCreateRendererObject3D(renderer, gameObject, component);
+            sparkInitializeRendererObject(&rendererObject);
+            sparkUpdateRendererObject(renderer, &rendererObject);
+            vector_add(&rendererObjectGroup.objects, rendererObject);
+            break;
+        }
+    }
+}
+
+void sparkUpdateAllRendererObjectGroups(SparkRenderer* renderer) {
+    int numOfGroups = vector_size(renderer->rendererObjectGroups);
+    for(int i = 0; i < numOfGroups; i++) {
+        SparkRendererObjectGroup* rendererObjectGroup = &renderer->rendererObjectGroups[i];
+        sparkUpdateRendererObjectGroup(renderer, rendererObjectGroup);
+    }
+}
+
+void sparkUpdateRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup) {
+    int numOfObjects = vector_size(rendererObjectGroup->objects);
+    for(int i = 0; i < numOfObjects; i++) {
+        SparkRendererObject* rendererObject = &rendererObjectGroup->objects[i];
         sparkUpdateRendererObject(renderer, rendererObject);
     }
 }
@@ -117,13 +146,22 @@ void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* ren
     sparkUnbindRendererObject();
 }
 
-void sparkDeleteRendererObjects(SparkRenderer* renderer) {
-    for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
-        SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
+void sparkDeleteAllRendererObjectGroups(SparkRenderer* renderer) {
+    int numOfGroups = vector_size(renderer->rendererObjectGroups);
+    for(int i = 0; i < numOfGroups; i++) {
+        SparkRendererObjectGroup* rendererObjectGroup = &renderer->rendererObjectGroups[i];
+        sparkDeleteRendererObjectGroup(renderer, rendererObjectGroup);
+    }
+    vector_free(renderer->rendererObjectGroups);
+    renderer->rendererObjectGroups = vector_create();
+}
+
+void sparkDeleteRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup) {
+    int numOfObjects = vector_size(rendererObjectGroup->objects);
+    for(int i = 0; i < numOfObjects; i++) {
+        SparkRendererObject* rendererObject = &rendererObjectGroup->objects[i];
         sparkDeleteRendererObject(rendererObject);
     }
-    vector_free(renderer->rendererObjects);
-    renderer->rendererObjects = vector_create();
 }
 
 void sparkRender(SparkRenderer* renderer) {
@@ -167,64 +205,66 @@ void sparkRender(SparkRenderer* renderer) {
                 bounceX = rand() % 2 == 0 ? -bounceX : bounceX;
             }
 
-            /* Update all renderer objects */
-            sparkUpdateRendererObjects(renderer);
+            /* Update all renderer object groups */
+            sparkUpdateAllRendererObjectGroups(renderer);
 
-            /* Draw all renderer objects */
+            /* Draw all renderer objects groups*/
             /* TODO: move this somewhere else */
-            for(int i = 0; i < vector_size(renderer->rendererObjects); i++) {
-                SparkRendererObject* rendererObject = &renderer->rendererObjects[i];
+            for(int i = 0; i < vector_size(renderer->rendererObjectGroups); i++) {
+                SparkRendererObjectGroup* rendererObjectGroup = &renderer->rendererObjectGroups[i];
+                for(int j = 0; j < vector_size(rendererObjectGroup->objects); j++) {
+                    SparkRendererObject* rendererObject = &rendererObjectGroup->objects[j];
 
-                SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
-                SparkMaterial* material = materialData->data;
-                SparkComponentData* shaderData = hashmap_get(material->data, &(SparkComponentData){ .key = "shader" });
-                SparkShader* shader = shaderData->data;
+                    SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
+                    SparkMaterial* material = materialData->data;
+                    SparkComponentData* shaderData = hashmap_get(material->data, &(SparkComponentData){ .key = "shader" });
+                    SparkShader* shader = shaderData->data;
 
-                sparkBindRendererObject(rendererObject);
-                sparkActivateShader(shader);
-                switch(rendererObject->component->type) {
-                    case COMPONENT_TYPE_3D_RENDERER: {
-                        GLuint modelLoc0 = glGetUniformLocation(shader->id, "model");
-                        glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
-                        GLuint viewLoc0 = glGetUniformLocation(shader->id, "view");
-                        glUniformMatrix4fv(viewLoc0, 1, GL_FALSE, view);
-                        GLuint projLoc0 = glGetUniformLocation(shader->id, "proj");
-                        glUniformMatrix4fv(projLoc0, 1, GL_FALSE, proj);
-                        break;
+                    sparkBindRendererObject(rendererObject);
+                    sparkActivateShader(shader);
+                    switch(rendererObject->component->type) {
+                        case COMPONENT_TYPE_3D_RENDERER: {
+                            GLuint modelLoc0 = glGetUniformLocation(shader->id, "model");
+                            glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
+                            GLuint viewLoc0 = glGetUniformLocation(shader->id, "view");
+                            glUniformMatrix4fv(viewLoc0, 1, GL_FALSE, view);
+                            GLuint projLoc0 = glGetUniformLocation(shader->id, "proj");
+                            glUniformMatrix4fv(projLoc0, 1, GL_FALSE, proj);
+                            break;
+                        }
+
+                        case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
+                            SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
+                            SparkTexture* texture = textureData->data;
+
+                            GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
+                            glUniform1f(uniTex1, 0);
+
+                            glBindTexture(GL_TEXTURE_2D, texture->id);
+                            break;
+                        }
+
+                        case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+                            SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
+                            SparkTexture* texture = textureData->data;
+
+                            GLuint modelLoc1 = glGetUniformLocation(shader->id, "model");
+                            glUniformMatrix4fv(modelLoc1, 1, GL_FALSE, model);
+                            GLuint viewLoc1 = glGetUniformLocation(shader->id, "view");
+                            glUniformMatrix4fv(viewLoc1, 1, GL_FALSE, view);
+                            GLuint projLoc1 = glGetUniformLocation(shader->id, "proj");
+                            glUniformMatrix4fv(projLoc1, 1, GL_FALSE, proj);
+
+                            GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
+                            glUniform1f(uniTex1, 0);
+
+                            glBindTexture(GL_TEXTURE_2D, texture->id);
+                            break;
+                        }
                     }
-
-                    case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
-                        SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
-                        SparkTexture* texture = textureData->data;
-
-                        GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
-                        glUniform1f(uniTex1, 0);
-
-                        glBindTexture(GL_TEXTURE_2D, texture->id);
-                        break;
-                    }
-
-                    case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
-                        SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
-                        SparkTexture* texture = textureData->data;
-
-                        GLuint modelLoc1 = glGetUniformLocation(shader->id, "model");
-                        glUniformMatrix4fv(modelLoc1, 1, GL_FALSE, model);
-                        GLuint viewLoc1 = glGetUniformLocation(shader->id, "view");
-                        glUniformMatrix4fv(viewLoc1, 1, GL_FALSE, view);
-                        GLuint projLoc1 = glGetUniformLocation(shader->id, "proj");
-                        glUniformMatrix4fv(projLoc1, 1, GL_FALSE, proj);
-
-                        GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
-                        glUniform1f(uniTex1, 0);
-
-                        glBindTexture(GL_TEXTURE_2D, texture->id);
-                        break;
-                    }
+                    sparkDrawRendererObject(rendererObject);
+                    sparkUnbindRendererObject();
                 }
-                sparkDrawRendererObject(rendererObject);
-
-                sparkUnbindRendererObject();
             }
 
             clock_0 = clock();
@@ -234,7 +274,7 @@ void sparkRender(SparkRenderer* renderer) {
         glfwPollEvents();
     }
 
-    sparkDeleteRendererObjects(renderer);
+    sparkDeleteAllRendererObjectGroups(renderer);
     hashmap_scan(renderer->shaders, sparkDeleteShaderIter, NULL);
     /* TODO: Delete all textures */
     /* TODO: Delete all materials */
@@ -246,5 +286,5 @@ void sparkRender(SparkRenderer* renderer) {
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene) {
     renderer->scene = scene;
 
-    sparkCreateRendererObjects(renderer);
+    sparkCreateAllRendererObjectGroups(renderer);
 }

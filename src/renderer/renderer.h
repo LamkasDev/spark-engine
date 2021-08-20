@@ -10,7 +10,7 @@
 
 #include "../gameobjects/gameobject.h"
 
-#include "utils/renderer_object.h"
+#include "utils/renderer_object_group.h"
 #include "shaders/shader.h"
 #include "../structs/texture.h"
 
@@ -19,7 +19,7 @@ struct SparkRenderer {
     SparkScene* scene;
     FT_Library ft;
 
-    SparkRendererObject* rendererObjects;
+    SparkRendererObjectGroup* rendererObjectGroups;
     hashmap shaders;
     hashmap textures;
     hashmap materials;
@@ -33,13 +33,17 @@ void sparkSetupWindow(SparkRenderer* renderer);
 SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath);
 void sparkOnWindowResize(GLFWwindow* window, int w, int h);
 
-void sparkCreateRendererObjects(SparkRenderer* renderer);
-void sparkCreateRendererObject(SparkRenderer* renderer, SparkGameObject* gameObject);
+void sparkCreateAllRendererObjectGroups(SparkRenderer* renderer);
+void sparkCreateRendererObjectGroups(SparkRenderer* renderer, SparkGameObject* gameObject);
+SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer, SparkGameObject* gameObject, SparkComponent* component);
 
-void sparkUpdateRendererObjects(SparkRenderer* renderer);
+void sparkUpdateAllRendererObjectGroups(SparkRenderer* renderer);
+void sparkUpdateRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup);
 void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject);
 
-void sparkDeleteRendererObjects(SparkRenderer* renderer);
+void sparkDeleteAllRendererObjectGroups(SparkRenderer* renderer);
+void sparkDeleteRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup);
+
 void sparkRender(SparkRenderer* renderer);
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene);
 
