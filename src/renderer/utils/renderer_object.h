@@ -26,7 +26,7 @@ void sparkGenerateBuffersInRendererObject(SparkRendererObject* rendererObject);
 void sparkLinkAttributesInRendererObject(SparkRendererObject* rendererObject, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 
 void sparkBindRendererObject(SparkRendererObject* rendererObject);
-void sparkUnbindRendererObject();
+void sparkUnbindRendererObject(SparkRendererObject* rendererObject);
 void sparkBufferDataInRendererObject(SparkRendererObject* rendererObject);
 
 void sparkInitializeRendererObject(SparkRendererObject* rendererObject);

@@ -15,7 +15,7 @@ void sparkBindRendererObject(SparkRendererObject* rendererObject) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererObject->EBO);
 }
 
-void sparkUnbindRendererObject() {
+void sparkUnbindRendererObject(SparkRendererObject* rendererObject) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -40,14 +40,15 @@ void sparkInitializeRendererObject(SparkRendererObject* rendererObject) {
         }
 
         case COMPONENT_TYPE_2D_TEXTURE_RENDERER:
-        case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+        case COMPONENT_TYPE_3D_TEXTURE_RENDERER:
+        case COMPONENT_TYPE_TEXT_RENDERER: {
             sparkLinkAttributesInRendererObject(rendererObject, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
             sparkLinkAttributesInRendererObject(rendererObject, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
             break;
         }
     }
 
-    sparkUnbindRendererObject();
+    sparkUnbindRendererObject(rendererObject);
 }
 
 void sparkDrawRendererObject(SparkRendererObject* rendererObject) {

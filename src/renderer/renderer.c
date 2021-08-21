@@ -1,6 +1,7 @@
 #include "utils/renderer_object_group.h"
 #include "shaders/shader.h"
 #include "2D/2D_utils.h"
+#include "2D/text_utils.h"
 #include "3D/3D_utils.h"
 #include "../structs/scene.h"
 #include "../utils/hashmap_utils.h"
@@ -91,9 +92,9 @@ SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer,
 
             SparkRendererObject rendererObject = sparkCreateRendererObject2D(renderer, gameObject, component);
             sparkInitializeRendererObject(&rendererObject);
-            sparkUpdateRendererObject(renderer, &rendererObject);
+            sparkUpdateRendererObject(renderer, &rendererObject, 0);
             vector_add(&rendererObjectGroup.objects, rendererObject);
-            break;
+            return rendererObjectGroup;
         }
 
         case COMPONENT_TYPE_3D_RENDERER:
@@ -104,9 +105,25 @@ SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer,
 
             SparkRendererObject rendererObject = sparkCreateRendererObject3D(renderer, gameObject, component);
             sparkInitializeRendererObject(&rendererObject);
-            sparkUpdateRendererObject(renderer, &rendererObject);
+            sparkUpdateRendererObject(renderer, &rendererObject, 0);
             vector_add(&rendererObjectGroup.objects, rendererObject);
-            break;
+            return rendererObjectGroup;
+        }
+
+        case COMPONENT_TYPE_TEXT_RENDERER: {
+            SparkRendererObjectGroup rendererObjectGroup = {
+                .objects = vector_create()
+            };
+
+            SparkComponentData* textData = hashmap_get(component->data, &(SparkComponentData){ .key = "text" });
+            char* text = textData->data;
+            for(int i = 0; i < strlen(text); i++) {
+                SparkRendererObject rendererObject = sparkCreateRendererObjectText(renderer, gameObject, component);
+                sparkInitializeRendererObject(&rendererObject);
+                sparkUpdateRendererObject(renderer, &rendererObject, 0);
+                vector_add(&rendererObjectGroup.objects, rendererObject);
+            }
+            return rendererObjectGroup;
         }
     }
 }
@@ -123,11 +140,11 @@ void sparkUpdateRendererObjectGroup(SparkRenderer* renderer, SparkRendererObject
     int numOfObjects = vector_size(rendererObjectGroup->objects);
     for(int i = 0; i < numOfObjects; i++) {
         SparkRendererObject* rendererObject = &rendererObjectGroup->objects[i];
-        sparkUpdateRendererObject(renderer, rendererObject);
+        sparkUpdateRendererObject(renderer, rendererObject, i);
     }
 }
 
-void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject) {
+void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject, int i) {
     sparkBindRendererObject(rendererObject);
     switch(rendererObject->component->type) {
         case COMPONENT_TYPE_2D_RENDERER:
@@ -141,9 +158,15 @@ void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* ren
             sparkUpdateRendererObject3D(renderer, rendererObject);
             break;
         }
+
+        /* TODO: best case scenario will be when text is rendered in a single draw call with a single texture */
+        case COMPONENT_TYPE_TEXT_RENDERER: {
+            sparkUpdateRendererObjectText(renderer, rendererObject, i);
+            break;
+        }
     }
     sparkBufferDataInRendererObject(rendererObject);
-    sparkUnbindRendererObject();
+    sparkUnbindRendererObject(rendererObject);
 }
 
 void sparkDeleteAllRendererObjectGroups(SparkRenderer* renderer) {
@@ -261,9 +284,25 @@ void sparkRender(SparkRenderer* renderer) {
                             glBindTexture(GL_TEXTURE_2D, texture->id);
                             break;
                         }
+
+                        case COMPONENT_TYPE_TEXT_RENDERER: {
+                            SparkComponentData* textData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "text" });
+                            char* text = textData->data;
+                            SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
+                            SparkFont* font = fontData->data;
+                            SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[j] });
+
+                            GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
+                            glUniform1f(uniTex1, 0);
+                            GLuint uniColor = glGetUniformLocation(shader->id, "color");
+                            glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
+
+                            glBindTexture(GL_TEXTURE_2D, currentCharacter->id);
+                            break;
+                        }
                     }
                     sparkDrawRendererObject(rendererObject);
-                    sparkUnbindRendererObject();
+                    sparkUnbindRendererObject(rendererObject);
                 }
             }
 
@@ -278,6 +317,7 @@ void sparkRender(SparkRenderer* renderer) {
     hashmap_scan(renderer->shaders, sparkDeleteShaderIter, NULL);
     /* TODO: Delete all textures */
     /* TODO: Delete all materials */
+    /* TODO: Delete all fonts */
 
     glfwDestroyWindow(renderer->window);
     glfwTerminate();

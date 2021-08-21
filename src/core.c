@@ -33,6 +33,8 @@ void run() {
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     int iconC;
     GLFWimage icons[1];
@@ -50,6 +52,7 @@ void run() {
     SparkShader textureShader0 = sparkCompileShader(&renderer, "2DTexture", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/2D_tex_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/2D_tex_fragment.shader")));
     SparkShader colorShader1 = sparkCompileShader(&renderer, "3DColor", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_color_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_color_fragment.shader")));
     SparkShader textureShader1 = sparkCompileShader(&renderer, "3DTexture", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_tex_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/3D_tex_fragment.shader")));
+    SparkShader textShader0 = sparkCompileShader(&renderer, "Text", sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/text_vertex.shader")), sparkCombinePaths(assetsPath, sparkCreatePathFromString("/shaders/text_fragment.shader")));
 
     clock_t end_1 = clock();
     double elapsed_1 = (double)(end_1 - begin_1) / CLOCKS_PER_SEC;
@@ -82,8 +85,9 @@ void run() {
     /* Create Materials */
     SparkColor colors[] = { { .r=1.0f, .g=1.0f, .b=1.0f, .a=1.0f } };
     int shapes[] = { RENDERER_SHAPE_QUAD };
-    SparkVector2 sizes[] = { { .x = 180.0f, .y = 180.0f } };
+    SparkVector2 sizes[] = { { .x = 180.0f, .y = 180.0f }, { .x = 350.0f, .y = 100.0f } };
     float borders[] = { 0.3f };
+    char* texts[] = { "abc" };
 
     SparkMaterial material_0 = sparkCreateMaterial("Color 2D", &colorShader0);
     hashmap_set(material_0.data, &(SparkComponentData){ .key = "color", .data = &colors[0] });
@@ -105,6 +109,9 @@ void run() {
     hashmap_set(material_3.data, &(SparkComponentData){ .key = "shape", .data = &shapes[0] });
     hashmap_set(renderer.materials, &material_3);
 
+    SparkMaterial material_4 = sparkCreateMaterial("Font", &textShader0);
+    hashmap_set(renderer.materials, &material_4);
+
     clock_t end_3 = clock();
     double elapsed_3 = (double)(end_3 - begin_3) / CLOCKS_PER_SEC;
     printf("Created materials (%i materials in %.3fs)!\n", hashmap_count(renderer.materials), elapsed_3);
@@ -120,6 +127,15 @@ void run() {
     hashmap_set(component_0->data, &(SparkComponentData){ .key = "size", .data = &sizes[0] });
     hashmap_set(component_0->data, &(SparkComponentData){ .key = "material", .data = &material_1 });
     vector_add(&scene.gameObjects, gameObject_0);
+
+    SparkGameObject gameObject_1 = sparkCreateGameObject();
+    SparkComponent* component_1 = sparkCreateComponent(&gameObject_1, COMPONENT_TYPE_TEXT_RENDERER);
+    gameObject_1.pos.y = 50.0f;
+    hashmap_set(component_1->data, &(SparkComponentData){ .key = "size", .data = &sizes[1] });
+    hashmap_set(component_1->data, &(SparkComponentData){ .key = "text", .data = texts[0] });
+    hashmap_set(component_1->data, &(SparkComponentData){ .key = "font", .data = &font_0 });
+    hashmap_set(component_1->data, &(SparkComponentData){ .key = "material", .data = &material_4 });
+    vector_add(&scene.gameObjects, gameObject_1);
 
     sparkLoadScene(&renderer, &scene);
 

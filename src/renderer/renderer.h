@@ -39,7 +39,7 @@ SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer,
 
 void sparkUpdateAllRendererObjectGroups(SparkRenderer* renderer);
 void sparkUpdateRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup);
-void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject);
+void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject, int i);
 
 void sparkDeleteAllRendererObjectGroups(SparkRenderer* renderer);
 void sparkDeleteRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup);
