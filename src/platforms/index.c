@@ -5,8 +5,10 @@
 #include "../../libs/include/hashmap/hashmap.c"
 
 #include "../core.c"
+#include "../app/app.c"
 #include "../components/component.c"
 #include "../components/component_data.c"
+#include "../editor/editor.c"
 #include "../gameobjects/gameobject.c"
 #include "../io/io.c"
 #include "../renderer/renderer.c"

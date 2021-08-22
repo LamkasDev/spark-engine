@@ -3,10 +3,6 @@
 #include "2D/2D_utils.h"
 #include "2D/text_utils.h"
 #include "3D/3D_utils.h"
-#include "../structs/scene.h"
-#include "../utils/hashmap_utils.h"
-#include "../utils/math.h"
-#include "../utils/print.h"
 
 void sparkSetupWindow(SparkRenderer* renderer) {
     glfwInit();
@@ -216,14 +212,12 @@ void sparkRender(SparkRenderer* renderer) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             /* stupid bouncing dvd thing */
-            SparkComponentData* bounceSizeData = hashmap_get(renderer->scene->gameObjects[0].components[0].data, &(SparkComponentData){ .key = "size" });
-            SparkVector2* bounceSize = bounceSizeData->data;
             renderer->scene->gameObjects[0].pos.x += bounceX;
             renderer->scene->gameObjects[0].pos.y += bounceY;
-            if(renderer->scene->gameObjects[0].pos.x < 0 || renderer->scene->gameObjects[0].pos.x + bounceSize->x > renderer->ww) {
+            if(renderer->scene->gameObjects[0].pos.x < 0 || renderer->scene->gameObjects[0].pos.x + renderer->scene->gameObjects[0].scale.x > renderer->ww) {
                 bounceX = -bounceX;
                 bounceY = rand() % 2 == 0 ? -bounceY : bounceY;
-            } else if(renderer->scene->gameObjects[0].pos.y < 0 || renderer->scene->gameObjects[0].pos.y + bounceSize->y > renderer->wh) {
+            } else if(renderer->scene->gameObjects[0].pos.y < 0 || renderer->scene->gameObjects[0].pos.y + renderer->scene->gameObjects[0].scale.y > renderer->wh) {
                 bounceY = -bounceY;
                 bounceX = rand() % 2 == 0 ? -bounceX : bounceX;
             }
@@ -325,6 +319,5 @@ void sparkRender(SparkRenderer* renderer) {
 
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene) {
     renderer->scene = scene;
-
     sparkCreateAllRendererObjectGroups(renderer);
 }

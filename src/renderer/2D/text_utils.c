@@ -18,8 +18,6 @@ void sparkUpdateRendererObjectText(SparkRenderer* renderer, SparkRendererObject*
     SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
     SparkFont* font = fontData->data;
     SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[i] });
-    SparkComponentData* sizeData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "size" });
-    SparkVector2* size = sizeData->data;
 
     GLfloat xOffset = 0.0f;
     GLfloat yOffset = 0.0f;
@@ -30,7 +28,7 @@ void sparkUpdateRendererObjectText(SparkRenderer* renderer, SparkRendererObject*
 
     SparkVector2* points = vector_create();
     GLfloat xPos = ((rendererObject->gameObject->pos.x + currentCharacter->bearing.x + xOffset) / ww) * 2.0f;
-    GLfloat yPos = ((rendererObject->gameObject->pos.y + (size->y - currentCharacter->size.y) + yOffset) / wh) * 2.0f;
+    GLfloat yPos = ((rendererObject->gameObject->pos.y + (rendererObject->gameObject->scale.y - currentCharacter->size.y) + yOffset) / wh) * 2.0f;
     GLfloat xSize = (currentCharacter->size.x / ww) * 2.0f;
     GLfloat ySize = (currentCharacter->size.y / wh) * 2.0f;
 

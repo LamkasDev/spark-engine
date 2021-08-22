@@ -13,9 +13,9 @@ SparkFont sparkCreateFont(char* name) {
     return font;
 }
 
-void sparkLoadFont(SparkRenderer* renderer, SparkFont* font, char* path) {
+void sparkLoadFont(FT_Library* library, SparkFont* font, char* path) {
     FT_Face face;
-    FT_New_Face(renderer->ft, path, 0, &face);
+    FT_New_Face(*library, path, 0, &face);
     FT_Set_Pixel_Sizes(face, 0, 48);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

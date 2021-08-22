@@ -11,6 +11,6 @@ struct SparkFont {
 };
 typedef struct SparkFont SparkFont;
 SparkFont sparkCreateFont(char* name);
-void sparkLoadFont(SparkRenderer* renderer, SparkFont* font, char* path);
+void sparkLoadFont(FT_Library* library, SparkFont* font, char* path);
 
 #endif

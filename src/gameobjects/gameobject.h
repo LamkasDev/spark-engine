@@ -1,11 +1,9 @@
 #ifndef GAMEOBJECT_H_INCLUDED
 #define GAMEOBJECT_H_INCLUDED
 
-#include "../structs/vector_3.h"
-#include "../components/component.h"
-
 struct SparkGameObject {
     SparkVector3 pos;
+    SparkVector3 scale;
     SparkComponent* components;
 };
 typedef struct SparkGameObject SparkGameObject;

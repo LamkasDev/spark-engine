@@ -1,5 +1,3 @@
-#include "../utils/string.h"
-
 unsigned char* sparkReadFile(char path[255], bool terminate, int* size) {
     unsigned char* buffer = NULL;
     int file_size, read_size;

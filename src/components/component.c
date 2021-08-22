@@ -1,6 +1,3 @@
-#include "../gameobjects/gameobject.h"
-#include "../utils/hashmap_utils.h"
-
 SparkComponent* sparkCreateComponent(void* _gameObject, int type) {
     SparkGameObject* gameObject = (SparkGameObject*)_gameObject;
     SparkComponent component = { 

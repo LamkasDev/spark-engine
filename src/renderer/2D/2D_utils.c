@@ -17,8 +17,6 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
     SparkMaterial* material = materialData->data;
     SparkComponentData* shapeData = hashmap_get(material->data, &(SparkComponentData){ .key = "shape" });
     int* shape = shapeData->data;
-    SparkComponentData* sizeData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "size" });
-    SparkVector2* size = sizeData->data;
 
     SparkVector2* points = vector_create();
     switch(*shape) {
@@ -26,8 +24,8 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
         case RENDERER_SHAPE_EMPTY_QUAD: {
             GLfloat xPos = (rendererObject->gameObject->pos.x / ww) * 2.0f;
             GLfloat yPos = (rendererObject->gameObject->pos.y / wh) * 2.0f;
-            GLfloat xSize = (size->x / ww) * 2.0f;
-            GLfloat ySize = (size->y / wh) * 2.0f;
+            GLfloat xSize = (rendererObject->gameObject->scale.x / ww) * 2.0f;
+            GLfloat ySize = (rendererObject->gameObject->scale.y / wh) * 2.0f;
 
             SparkComponentData* borderData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "border" });
             if(borderData == NULL) {
@@ -51,13 +49,15 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
                 GLfloat yBorderRad = ySize * (*border);
                 GLfloat x = 0.0f;
                 GLfloat y = 0.0f;
+                GLfloat xSize0 = rendererObject->gameObject->scale.x / ww;
+                GLfloat ySize0 = rendererObject->gameObject->scale.y / wh;
 
                 /* Point (Center) */
-                SparkVector2 p0 = { .x = -1.0f + xPos + (size->x / ww), .y = 1.0f - yPos - (size->y / wh) };
+                SparkVector2 p0 = { .x = -1.0f + xPos + xSize0, .y = 1.0f - yPos - ySize0 };
                 vector_add(&points, p0);
                 
                 /* Point (Bottom Center) */
-                SparkVector2 p1 = { .x = -1.0f + xPos + (size->x / ww), .y = 1.0f - yPos - ySize };
+                SparkVector2 p1 = { .x = -1.0f + xPos + xSize0, .y = 1.0f - yPos - ySize };
                 vector_add(&points, p1);
                 /* Border (Bottom Right) */
                 x = -1.0f + xPos + xSize - xBorderRad;
@@ -69,7 +69,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
                 SparkVector2 p1B = { .x = x + xBorderRad, .y = y };
                 vector_add(&points, p1B);
                 /* Point (Right Center) */
-                SparkVector2 p2 = { .x = -1.0f + xPos + xSize, .y = 1.0f - yPos - (size->y / wh) };
+                SparkVector2 p2 = { .x = -1.0f + xPos + xSize, .y = 1.0f - yPos - ySize0 };
                 vector_add(&points, p2);
                 /* Border (Top Right) */
                 x = -1.0f + xPos + xSize - xBorderRad;
@@ -81,7 +81,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
                 SparkVector2 p2B = { .x = x, .y = y + yBorderRad };
                 vector_add(&points, p2B);
                 /* Point (Top Center) */
-                SparkVector2 p3 = { .x = -1.0f + xPos + (size->x / ww), .y = 1.0f - yPos };
+                SparkVector2 p3 = { .x = -1.0f + xPos + xSize0, .y = 1.0f - yPos };
                 vector_add(&points, p3);
                 /* Border (Top Left) */
                 x = -1.0f + xPos + xBorderRad;
@@ -93,7 +93,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
                 SparkVector2 p3B = { .x = x - xBorderRad, .y = y };
                 vector_add(&points, p3B);
                 /* Point (Left Center) */
-                SparkVector2 p4 = { .x = -1.0f + xPos, .y = 1.0f - yPos - (size->y / wh) };
+                SparkVector2 p4 = { .x = -1.0f + xPos, .y = 1.0f - yPos - ySize0 };
                 vector_add(&points, p4);
                 /* Border (Bottom Left) */
                 x = -1.0f + xPos + xBorderRad;

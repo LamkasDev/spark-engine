@@ -8,11 +8,8 @@
 #define RENDERER_SHAPE_QUAD 0
 #define RENDERER_SHAPE_EMPTY_QUAD 1
 
-#include "../gameobjects/gameobject.h"
-
 #include "utils/renderer_object_group.h"
 #include "shaders/shader.h"
-#include "../structs/texture.h"
 
 struct SparkRenderer {
     GLFWwindow* window;
