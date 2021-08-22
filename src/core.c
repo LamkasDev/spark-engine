@@ -85,7 +85,7 @@ void run() {
     /* Create Materials */
     SparkColor colors[] = { { .r=1.0f, .g=1.0f, .b=1.0f, .a=1.0f } };
     int shapes[] = { RENDERER_SHAPE_QUAD };
-    SparkVector2 sizes[] = { { .x = 180.0f, .y = 180.0f }, { .x = 350.0f, .y = 100.0f } };
+    SparkVector2 sizes[] = { { .x = 180.0f, .y = 180.0f }, { .x = 350.0f, .y = 50.0f } };
     float borders[] = { 0.3f };
     char* texts[] = { "abc" };
 
@@ -130,7 +130,7 @@ void run() {
 
     SparkGameObject gameObject_1 = sparkCreateGameObject();
     SparkComponent* component_1 = sparkCreateComponent(&gameObject_1, COMPONENT_TYPE_TEXT_RENDERER);
-    gameObject_1.pos.y = 50.0f;
+    gameObject_1.pos.y = 0.0f;
     hashmap_set(component_1->data, &(SparkComponentData){ .key = "size", .data = &sizes[1] });
     hashmap_set(component_1->data, &(SparkComponentData){ .key = "text", .data = texts[0] });
     hashmap_set(component_1->data, &(SparkComponentData){ .key = "font", .data = &font_0 });
