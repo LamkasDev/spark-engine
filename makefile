@@ -41,7 +41,7 @@ all: build/objs/spark.o
 	@echo Finished!
 	@echo ==========
 
-debug: CC_PREFLAGS+=-ggdb
+debug: PRE_CC_FLAGS+=-ggdb
 debug: | all
 
 clean:
