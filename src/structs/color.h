@@ -8,5 +8,7 @@ struct SparkColor {
     GLfloat a;
 };
 typedef struct SparkColor SparkColor;
+SparkColor sparkCreateColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+SparkColor sparkCreateColorFromHex(int hex, GLfloat a);
 
 #endif

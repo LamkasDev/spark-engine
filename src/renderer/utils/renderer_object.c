@@ -13,6 +13,10 @@ void sparkBindRendererObject(SparkRendererObject* rendererObject) {
     glBindVertexArray(rendererObject->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, rendererObject->VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererObject->EBO);
+
+    if(rendererObject->component->type == COMPONENT_TYPE_TEXT_RENDERER) {
+        glEnable(GL_BLEND);
+    }
 }
 
 void sparkUnbindRendererObject(SparkRendererObject* rendererObject) {
@@ -20,6 +24,11 @@ void sparkUnbindRendererObject(SparkRendererObject* rendererObject) {
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    if(rendererObject->component->type == COMPONENT_TYPE_TEXT_RENDERER) {
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 }
 
 void sparkBufferDataInRendererObject(SparkRendererObject* rendererObject) {

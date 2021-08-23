@@ -16,7 +16,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
     SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
     SparkMaterial* material = materialData->data;
     SparkComponentData* shapeData = hashmap_get(material->data, &(SparkComponentData){ .key = "shape" });
-    int* shape = shapeData->data;
+    int* shape = (int*)((intptr_t)renderer->store.integers + (intptr_t)shapeData->data);
 
     SparkVector2* points = vector_create();
     switch(*shape) {
@@ -24,8 +24,8 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
         case RENDERER_SHAPE_EMPTY_QUAD: {
             GLfloat xPos = (rendererObject->gameObject->pos.x / ww) * 2.0f;
             GLfloat yPos = (rendererObject->gameObject->pos.y / wh) * 2.0f;
-            GLfloat xSize = (rendererObject->gameObject->scale.x / ww) * 2.0f;
-            GLfloat ySize = (rendererObject->gameObject->scale.y / wh) * 2.0f;
+            GLfloat xSize = (rendererObject->gameObject->scale.x == -1.0f ? 1.0f : (rendererObject->gameObject->scale.x / ww)) * 2.0f;
+            GLfloat ySize = (rendererObject->gameObject->scale.y == -1.0f ? 1.0f : (rendererObject->gameObject->scale.y / wh)) * 2.0f;
 
             SparkComponentData* borderData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "border" });
             if(borderData == NULL) {
@@ -44,7 +44,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
             } else {
                 GLfloat twicePi = 2.0f * GLM_PI;
 
-                float* border = borderData->data;
+                float* border = (float*)((intptr_t)renderer->store.floats + (intptr_t)borderData->data);
                 GLfloat xBorderRad = xSize * (*border);
                 GLfloat yBorderRad = ySize * (*border);
                 GLfloat x = 0.0f;
@@ -119,7 +119,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
         switch(rendererObject->component->type) {
             case COMPONENT_TYPE_2D_RENDERER: {
                 SparkComponentData* colorData = hashmap_get(material->data, &(SparkComponentData){ .key = "color" });
-                SparkColor* color = colorData->data;
+                SparkColor* color = (SparkColor*)((intptr_t)renderer->store.colors + (intptr_t)colorData->data);
             
                 /* Add colors */
                 vector_add(&vertices, color->r);

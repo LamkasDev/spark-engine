@@ -13,8 +13,10 @@
 
 struct SparkRenderer {
     GLFWwindow* window;
-    SparkScene* scene;
     FT_Library ft;
+    
+    SparkScene* scene;
+    SparkStore store;
 
     SparkRendererObjectGroup* rendererObjectGroups;
     hashmap shaders;

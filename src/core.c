@@ -20,6 +20,8 @@
 #include "gameobjects/gameobject.h"
 #include "structs/scene.h"
 
+#include "store/store.h"
+#include "utils/store_utils.h"
 #include "renderer/renderer.h"
 
 #include "app/app.h"

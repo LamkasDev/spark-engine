@@ -13,51 +13,55 @@ void sparkLoadEditorTextures(SparkApp* app) {
 }
 
 void sparkCreateEditorMaterials(SparkApp* app) {
-    int shape = RENDERER_SHAPE_QUAD;
     SparkShader* shader_0 = hashmap_get(app->renderer.shaders, &(SparkShader){ .name = "2DTexture" });
     SparkShader* shader_1 = hashmap_get(app->renderer.shaders, &(SparkShader){ .name = "2DColor" });
-    SparkTexture* texture_0 = hashmap_get(app->renderer.textures, &(SparkTexture){ .name = "DVD" });
 
-    SparkMaterial material_0 = sparkCreateMaterial("DVD", shader_0);
-    hashmap_set(material_0.data, &(SparkComponentData){ .key = "texture", .data = texture_0 });
-    hashmap_set(material_0.data, &(SparkComponentData){ .key = "shape", .data = &shape });
+    SparkMaterial material_0 = sparkCreateMaterial("Color_0", shader_1);
+    hashmap_set(material_0.data, &(SparkComponentData){ .key = "color", .data = sparkCreateStoreColor(&app->renderer.store, sparkCreateColorFromHex(0xffffff, 1.0f)) });
+    hashmap_set(material_0.data, &(SparkComponentData){ .key = "shape", .data = sparkCreateStoreInteger(&app->renderer.store, RENDERER_SHAPE_QUAD) });
     hashmap_set(app->renderer.materials, &material_0);
 
-    SparkMaterial material_1 = sparkCreateMaterial("Color", shader_1);
-    hashmap_set(material_1.data, &(SparkComponentData){ .key = "color", .data = &(SparkColor){ .r=1.0f, .g=1.0f, .b=1.0f, .a=1.0f } });
-    hashmap_set(material_1.data, &(SparkComponentData){ .key = "shape", .data = &shape });
+    SparkMaterial material_1 = sparkCreateMaterial("Color_1", shader_1);
+    hashmap_set(material_1.data, &(SparkComponentData){ .key = "color", .data = sparkCreateStoreColor(&app->renderer.store, sparkCreateColorFromHex(0x2b2b2b, 1.0f)) });
+    hashmap_set(material_1.data, &(SparkComponentData){ .key = "shape", .data = sparkCreateStoreInteger(&app->renderer.store, RENDERER_SHAPE_QUAD) });
     hashmap_set(app->renderer.materials, &material_1);
+
+    SparkMaterial material_2 = sparkCreateMaterial("Color_2", shader_1);
+    hashmap_set(material_2.data, &(SparkComponentData){ .key = "color", .data = sparkCreateStoreColor(&app->renderer.store, sparkCreateColorFromHex(0x383838, 1.0f)) });
+    hashmap_set(material_2.data, &(SparkComponentData){ .key = "shape", .data = sparkCreateStoreInteger(&app->renderer.store, RENDERER_SHAPE_QUAD) });
+    hashmap_set(app->renderer.materials, &material_2);
 }
 
 SparkScene sparkCreateEditorScene(SparkApp* app) {
     SparkScene scene = sparkCreateScene("Editor");
     SparkFont* font_0 = hashmap_get(app->renderer.fonts, &(SparkFont){ .name = "Arial" });
-    SparkMaterial* material_0 = hashmap_get(app->renderer.materials, &(SparkMaterial){ .name = "DVD" });
-    SparkMaterial* material_1 = hashmap_get(app->renderer.materials, &(SparkMaterial){ .name = "Text" });
-    SparkMaterial* material_2 = hashmap_get(app->renderer.materials, &(SparkMaterial){ .name = "Color" });
+    SparkMaterial* material_0 = hashmap_get(app->renderer.materials, &(SparkMaterial){ .name = "Text" });
+    SparkMaterial* material_1 = hashmap_get(app->renderer.materials, &(SparkMaterial){ .name = "Color_1" });
+    SparkMaterial* material_2 = hashmap_get(app->renderer.materials, &(SparkMaterial){ .name = "Color_2" });
 
-    SparkGameObject gameObject_0 = sparkCreateGameObject();
-    SparkComponent* component_0 = sparkCreateComponent(&gameObject_0, COMPONENT_TYPE_2D_TEXTURE_RENDERER);
-    gameObject_0.pos = (SparkVector3){ .x = 0.0f, .y = 0.0f, .z = 0.0f };
-    gameObject_0.scale = (SparkVector3){ .x = 180.0f, .y = 180.0f, .z = 0.0f };
-    hashmap_set(component_0->data, &(SparkComponentData){ .key = "material", .data = material_0 });
-    vector_add(&scene.gameObjects, gameObject_0);
+    SparkGameObject gameObjectBG = sparkCreateGameObject();
+    SparkComponent* componentBG = sparkCreateComponent(&gameObjectBG, COMPONENT_TYPE_2D_RENDERER);
+    gameObjectBG.pos = (SparkVector3){ .x = 0.0f, .y = 0.0f, .z = 0.0f };
+    gameObjectBG.scale = (SparkVector3){ .x = -1, .y = -1, .z = 0.0f };
+    hashmap_set(componentBG->data, &(SparkComponentData){ .key = "material", .data = material_2 });
+    vector_add(&scene.gameObjects, gameObjectBG);
 
-    SparkGameObject gameObject_1 = sparkCreateGameObject();
-    SparkComponent* component_1 = sparkCreateComponent(&gameObject_1, COMPONENT_TYPE_TEXT_RENDERER);
-    gameObject_1.pos = (SparkVector3){ .x = 0.0f, .y = 0.0f, .z = 0.0f };
-    gameObject_1.scale = (SparkVector3){ .x = 350.0f, .y = 50.0f, .z = 0.0f };
-    hashmap_set(component_1->data, &(SparkComponentData){ .key = "text", .data = "owo" });
-    hashmap_set(component_1->data, &(SparkComponentData){ .key = "font", .data = font_0 });
-    hashmap_set(component_1->data, &(SparkComponentData){ .key = "material", .data = material_1 });
-    vector_add(&scene.gameObjects, gameObject_1);
+    SparkGameObject gameObjectPanel0 = sparkCreateGameObject();
+    SparkComponent* componentPanel0 = sparkCreateComponent(&gameObjectPanel0, COMPONENT_TYPE_2D_RENDERER);
+    gameObjectPanel0.pos = (SparkVector3){ .x = 0.0f, .y = 0.0f, .z = 0.0f };
+    gameObjectPanel0.scale = (SparkVector3){ .x = 180.0f, .y = -1, .z = 0.0f };
+    hashmap_set(componentPanel0->data, &(SparkComponentData){ .key = "material", .data = material_1 });
+    vector_add(&scene.gameObjects, gameObjectPanel0);
 
-    SparkGameObject gameObject_2 = sparkCreateGameObject();
-    SparkComponent* component_2 = sparkCreateComponent(&gameObject_2, COMPONENT_TYPE_2D_RENDERER);
-    gameObject_2.pos = (SparkVector3){ .x = 100.0f, .y = 100.0f, .z = 0.0f };
-    gameObject_2.scale = (SparkVector3){ .x = 180.0f, .y = 180.0f, .z = 0.0f };
-    hashmap_set(component_2->data, &(SparkComponentData){ .key = "material", .data = material_2 });
-    vector_add(&scene.gameObjects, gameObject_2);
+    SparkGameObject gameObjectPanel0Title = sparkCreateGameObject();
+    SparkComponent* componentPanel0Title = sparkCreateComponent(&gameObjectPanel0Title, COMPONENT_TYPE_TEXT_RENDERER);
+    gameObjectPanel0Title.pos = (SparkVector3){ .x = 10.0f, .y = 10.0f, .z = 0.0f };
+    gameObjectPanel0Title.scale = (SparkVector3){ .x = 160.0f, .y = 30.0f, .z = 0.0f };
+    hashmap_set(componentPanel0Title->data, &(SparkComponentData){ .key = "text", .data = sparkCreateStoreString(&app->renderer.store, "Spark") });
+    hashmap_set(componentPanel0Title->data, &(SparkComponentData){ .key = "font", .data = font_0 });
+    hashmap_set(componentPanel0Title->data, &(SparkComponentData){ .key = "fontSize", .data = sparkCreateStoreInteger(&app->renderer.store, 24) });
+    hashmap_set(componentPanel0Title->data, &(SparkComponentData){ .key = "material", .data = material_0 });
+    vector_add(&scene.gameObjects, gameObjectPanel0Title);
 
     return scene;
 }

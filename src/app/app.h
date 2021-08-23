@@ -3,6 +3,7 @@
 
 struct SparkApp {
     SparkRenderer renderer;
+
     char* executablePath;
     char* assetsPath;
 };

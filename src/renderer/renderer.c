@@ -5,6 +5,8 @@
 #include "3D/3D_utils.h"
 
 void sparkSetupWindow(SparkRenderer* renderer) {
+    renderer->store = sparkCreateStore();
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -112,8 +114,8 @@ SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer,
             };
 
             SparkComponentData* textData = hashmap_get(component->data, &(SparkComponentData){ .key = "text" });
-            char* text = textData->data;
-            for(int i = 0; i < strlen(text); i++) {
+            char** text = (char**)((intptr_t)renderer->store.strings + (intptr_t)textData->data);
+            for(int i = 0; i < strlen(*text); i++) {
                 SparkRendererObject rendererObject = sparkCreateRendererObjectText(renderer, gameObject, component);
                 sparkInitializeRendererObject(&rendererObject);
                 sparkUpdateRendererObject(renderer, &rendererObject, 0);
@@ -211,17 +213,6 @@ void sparkRender(SparkRenderer* renderer) {
             glfwGetWindowSize(renderer->window, &renderer->ww, &renderer->wh);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            /* stupid bouncing dvd thing */
-            renderer->scene->gameObjects[0].pos.x += bounceX;
-            renderer->scene->gameObjects[0].pos.y += bounceY;
-            if(renderer->scene->gameObjects[0].pos.x < 0 || renderer->scene->gameObjects[0].pos.x + renderer->scene->gameObjects[0].scale.x > renderer->ww) {
-                bounceX = -bounceX;
-                bounceY = rand() % 2 == 0 ? -bounceY : bounceY;
-            } else if(renderer->scene->gameObjects[0].pos.y < 0 || renderer->scene->gameObjects[0].pos.y + renderer->scene->gameObjects[0].scale.y > renderer->wh) {
-                bounceY = -bounceY;
-                bounceX = rand() % 2 == 0 ? -bounceX : bounceX;
-            }
-
             /* Update all renderer object groups */
             sparkUpdateAllRendererObjectGroups(renderer);
 
@@ -281,10 +272,10 @@ void sparkRender(SparkRenderer* renderer) {
 
                         case COMPONENT_TYPE_TEXT_RENDERER: {
                             SparkComponentData* textData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "text" });
-                            char* text = textData->data;
+                            char** text = (char**)((intptr_t)renderer->store.strings + (intptr_t)textData->data);
                             SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
                             SparkFont* font = fontData->data;
-                            SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[j] });
+                            SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = (*text)[j] });
 
                             GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
                             glUniform1f(uniTex1, 0);

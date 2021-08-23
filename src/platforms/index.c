@@ -19,6 +19,7 @@
 #include "../renderer/shaders/shader.c"
 #include "../renderer/utils/renderer_object_group.c"
 #include "../renderer/utils/renderer_object.c"
+#include "../store/store.c"
 #include "../structs/color.c"
 #include "../structs/font.c"
 #include "../structs/material.c"
@@ -29,6 +30,7 @@
 #include "../utils/hashmap_utils.c"
 #include "../utils/math.c"
 #include "../utils/print.c"
+#include "../utils/store_utils.c"
 #include "../utils/string.c"
 
 int main() {
