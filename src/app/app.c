@@ -1,6 +1,6 @@
 void sparkSetupApp(SparkApp* app) {
     app->executablePath = sparkGetExecutablePath();
-    app->assetsPath = sparkCombinePaths(app->executablePath, sparkCreatePathFromString("/../../../build_src"));
+    app->assetsPath = sparkCombinePaths(app->executablePath, sparkCreatePathFromString("/../data"));
 }
 
 void sparkSetupAppRenderer(SparkApp* app) {

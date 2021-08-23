@@ -1,35 +1,48 @@
 CC=gcc
-CC_PREFLAGS=-I./libs/include
-CC_POSTFLAGS=
-
 CC_FILE=
-BUILD_COMMAND=
+PRE_CC_FLAGS=-I./libs/include
+POST_CC_FLAGS=
+
+PRE_BUILD_COMMAND=
+POST_BUILD_COMMAND=
 CLEAN_COMMAND=
 
 ifeq ($(OS),Windows_NT)
-	BUILD_COMMAND=if not exist "build" mkdir build & if not exist "build\bin" mkdir build\bin
-	CLEAN_COMMAND=rd build /S /Q
 	CC_FILE=./src/platforms/windows/index.c
-	CC_POSTFLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm -lfreetype
+	POST_CC_FLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm -lfreetype
+
+	PRE_BUILD_COMMAND=if not exist "build" mkdir build & mkdir build\bin & mkdir build\objs > NUL
+	POST_BUILD_COMMAND=xcopy /E /I /Y src_data build\bin\data > NUL
+	CLEAN_COMMAND=rd build /S > NUL
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
-		BUILD_COMMAND=mkdir -p build/bin
-		CLEAN_COMMAND=rm -rf build
 		CC_FILE=./src/platforms/linux/index.c
-		CC_POSTFLAGS=-L./libs/lib -lm -lz -lbz2 -ldl -lpng16 -lX11 -lGL -lglfw3 -lcglm -lfreetype -pthread
+		POST_CC_FLAGS=-L./libs/lib -lm -lz -lbz2 -ldl -lpng16 -lX11 -lGL -lglfw3 -lcglm -lfreetype -pthread
+
+		PRE_BUILD_COMMAND=mkdir -p build/bin & mkdir -p build/objs > dev/null
+		POST_BUILD_COMMAND=cp -R src_data build/bin/data > dev/null
+		CLEAN_COMMAND=rm -rf build > dev/null
 	endif
 endif
 
-spark: $(CC_FILE)
-	$(BUILD_COMMAND)
-	$(CC) $(CC_PREFLAGS) -c $(CC_FILE) -o ./build/spark.o
-	$(CC) ./build/spark.o -o ./build/bin/spark $(CC_POSTFLAGS)
-		
-debug:
-	$(BUILD_COMMAND)
-	$(CC) $(CC_PREFLAGS) -ggdb -c $(CC_FILE) -o ./build/spark.o
-	$(CC) ./build/spark.o -o ./build/bin/spark $(CC_POSTFLAGS)
+all: build/objs/spark.o
+	@echo ==========
+	@echo Creating directories...
+	@$(PRE_BUILD_COMMAND)
+	@echo Finished!
+	@echo ==========
+	@echo Building...
+	$(CC) $(PRE_CC_FLAGS) -o ./build/objs/spark.o -c $(CC_FILE)
+	$(CC) -o ./build/bin/spark ./build/objs/spark.o $(POST_CC_FLAGS)
+	@echo ==========
+	@echo Copying data...
+	@$(POST_BUILD_COMMAND)
+	@echo Finished!
+	@echo ==========
+
+debug: CC_PREFLAGS+=-ggdb
+debug: | all
 
 clean:
 	$(CLEAN_COMMAND)
