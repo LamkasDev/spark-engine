@@ -12,5 +12,6 @@
 #include FT_FREETYPE_H
 
 #define SPARK_OS 1
+#include <unistd.h>
 
 #include "../index.c"

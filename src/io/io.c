@@ -31,7 +31,9 @@ char* sparkGetExecutablePath() {
         path = _pgmptr;
     #endif
     #if(SPARK_OS == 1)
-        readlink("/proc/self/exe", path, FILENAME_MAX);
+        char pathLink[FILENAME_MAX];
+        readlink("/proc/self/exe", pathLink, FILENAME_MAX - 1);
+        path = &pathLink;
     #endif
 
     return path;
