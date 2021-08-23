@@ -12,19 +12,12 @@
     <p>
     - Written in C<br />
     - Using OpenGL<br />
-    - Similar concepts as in Unity
+    - Similar concepts as in Unity<br />
     </p>
 </div>
 <hr />
 <div>
-    <h3>Features</h3>
-    <p>
-        - Basic 2D rendering
-    </p>
-</div>
-<hr />
-<div>
-    <h3>Building stuffs (>w<)</h3>
+    <h3>Building the game engine</h3>
     <p>
         <b>Requirements:</b><br />
         - <code>g++</code> 5.1 or later<br />
@@ -38,6 +31,36 @@
         - Build <a href="https://download.savannah.gnu.org/releases/freetype/">Freetype 2.9</a> (create build folder, use CMake to build Makefile, make)<br />
         - Copy the built library named <code>build/libfreetype.a</code> into <code>spark-engine/libs/lib/libfreetype.a</code><br /><br />
         <b>Building the game engine:</b><br />
-        - run <code>make</code> or <code>make debug</code><br />
+        - run <code>make</code> for production build<br />
+        - run <code>make debug</code> for build with debugging symbols
+    </p>
+</div>
+<hr />
+<div>
+    <h3>Platform support</h3>
+    <table>
+        <tr>
+            <th>Windows</th>
+            <th>Linux</th>
+            <th>macOS</th>
+        </tr>
+        <tr>
+            <th>✅</th>
+            <th>❓</th>
+            <th>❌</th>
+        </tr>
+    </table>
+    <p>
+    - Linux support is experimental and not tested.<br />
+    - macOS support is not planned, unless somebody adds support for it.
+    </p>
+</div>
+<hr />
+<div>
+    <h3>Contributing</h3>
+    <p>
+    If you want a feature added or you found a bug, make a new <a href="https://github.com/LamkasDev/spark-engine/issues">Issue</a>.<br />
+    If you want to contribute, make a new <a href="https://github.com/LamkasDev/spark-engine/pulls">Pull Request</a>.<br />
+    There are no guidelines or any of the sort and contributing is highly encougaraged!
     </p>
 </div>
