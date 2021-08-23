@@ -10,7 +10,7 @@ ifeq ($(OS),Windows_NT)
 	BUILD_COMMAND=if not exist "build" mkdir build & if not exist "build\bin" mkdir build\bin
 	CLEAN_COMMAND=rd build /S /Q
 	CC_FILE=./src/platforms/windows/index.c
-	CC_POSTFLAGS=-L./libs/lib -lgdi32 -lopengl32 -lglfw3 -lcglm -lfreetype
+	CC_POSTFLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm -lfreetype
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
