@@ -1,8 +1,20 @@
+/**
+ * Setups a SparkApp.
+ * 
+ * @param app a pointer to an app
+ * 
+ */
 void sparkSetupApp(SparkApp* app) {
     app->executablePath = sparkGetExecutablePath();
     app->assetsPath = sparkCombinePaths(app->executablePath, sparkCreatePathFromString("/../data"));
 }
 
+/**
+ * Setups a SparkApp's renderer, window and window icon.
+ * 
+ * @param app a pointer to an app
+ * 
+ */
 void sparkSetupAppRenderer(SparkApp* app) {
     sparkSetupWindow(&app->renderer);
 
@@ -15,6 +27,12 @@ void sparkSetupAppRenderer(SparkApp* app) {
     glfwSetWindowIcon(app->renderer.window, 1, icons);
 }
 
+/**
+ * Compiles default shaders for the engine.
+ * 
+ * @param app a pointer to an app
+ * 
+ */
 void sparkCompileDefaultShaders(SparkApp* app) {
     sparkCompileShader(&app->renderer, "2DColor", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_color_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_color_fragment.shader")));
     sparkCompileShader(&app->renderer, "2DTexture", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_tex_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_tex_fragment.shader")));
@@ -23,16 +41,34 @@ void sparkCompileDefaultShaders(SparkApp* app) {
     sparkCompileShader(&app->renderer, "Text", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/text_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/text_fragment.shader")));
 }
 
+/**
+ * Loads default fonts for the engine.
+ * 
+ * @param app a pointer to an app
+ * 
+ */
 void sparkLoadDefaultFonts(SparkApp* app) {
     SparkFont font_0 = sparkCreateFont("Arial");
     sparkLoadFont(&app->renderer.ft, &font_0, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/fonts/Arial.ttf")));
     hashmap_set(app->renderer.fonts, &font_0);
 }
 
+/**
+ * Loads default textures for the engine.
+ * 
+ * @param app a pointer to an app
+ * 
+ */
 void sparkLoadDefaultTextures(SparkApp* app) {
 
 }
 
+/**
+ * Creates default materials for the engine.
+ * 
+ * @param app a pointer to an app
+ * 
+ */
 void sparkCreateDefaultMaterials(SparkApp* app) {
     int shape = RENDERER_SHAPE_QUAD;
     SparkShader* shader_1 = hashmap_get(app->renderer.shaders, &(SparkShader){ .name = "Text" });

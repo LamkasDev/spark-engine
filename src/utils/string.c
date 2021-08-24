@@ -1,3 +1,11 @@
+/**
+ * Replaces all occurances of a substring in a string with a new substring.
+ * 
+ * @param orig source string
+ * @param rep substring to be replaced
+ * @param with replacement string
+ * 
+ */
 char* sparkStringReplace(char* orig, char* rep, char* with) {
     char* result;
     char* ins;

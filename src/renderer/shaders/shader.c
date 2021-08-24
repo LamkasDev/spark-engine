@@ -1,3 +1,11 @@
+/**
+ * Creates a new shader consisting from a vertex and a fragment shader.
+ * 
+ * @param name name of the shader
+ * @param vertexSource vertex source of the shader
+ * @param fragmentSource fragment source of the shader
+ * 
+ */
 SparkShader sparkCreateShader(char* name, const char* vertexSource, const char* fragmentSource) {
     char* uuid = sparkGenerateUUID();
     SparkShader shader = {
@@ -27,20 +35,43 @@ SparkShader sparkCreateShader(char* name, const char* vertexSource, const char* 
     return shader;
 }
 
+/**
+ * Activates a shader.
+ * 
+ * @param shader a pointer to a shader
+ * 
+ */
 void sparkActivateShader(SparkShader* shader) {
     glUseProgram(shader->id);
 }
 
+/**
+ * Deletes a shader.
+ * 
+ * @param shader a pointer to a shader
+ * 
+ */
 void sparkDeleteShader(SparkShader* shader) {
     glDeleteProgram(shader->id);
 }
 
+/**
+ * An iterator to delete all shaders in a hashmap.
+ */
 bool sparkDeleteShaderIter(const void *item, void *udata) {
     SparkShader* shader = (SparkShader*)item;
     sparkDeleteShader(shader);
     return true;
 }
 
+/**
+ * Verifies a shader for errors.
+ * 
+ * @param shader a pointer to a shader
+ * @param shader a shader ID
+ * @param type type of the shader
+ * 
+ */
 void sparkVerifyShader(SparkShader* shader, unsigned int id, char* type) {
     GLint status;
     char infoLog[1024];

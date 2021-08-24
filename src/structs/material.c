@@ -1,6 +1,13 @@
 #include "../components/component_data.h"
 #include "../utils/hashmap_utils.h"
 
+/**
+ * Creates a new material.
+ * 
+ * @param name name of the material
+ * @param shader a pointer to the material shader
+ * 
+ */
 SparkMaterial sparkCreateMaterial(char* name, SparkShader* shader) {
     char* uuid = sparkGenerateUUID();
     SparkMaterial material = {

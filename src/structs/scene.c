@@ -1,3 +1,9 @@
+/**
+ * Creates a new scene.
+ * 
+ * @param name name of the scene
+ * 
+ */
 SparkScene sparkCreateScene(char* name) {
     char* uuid = sparkGenerateUUID();
     SparkScene scene = {

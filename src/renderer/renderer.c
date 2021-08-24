@@ -4,6 +4,12 @@
 #include "2D/text_utils.h"
 #include "3D/3D_utils.h"
 
+/**
+ * Setups a GLFW windows and the renderer.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
 void sparkSetupWindow(SparkRenderer* renderer) {
     renderer->store = sparkCreateStore();
 
@@ -37,6 +43,15 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     FT_Init_FreeType(&renderer->ft);
 }
 
+/**
+ * Compiles a shader from paths to it's vertex and fragment files.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param name shader name
+ * @param vertexPath path to the vertex shader
+ * @param fragmentPath path to the fragment shader
+ * 
+ */
 SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath) {
     int size;
     const unsigned char* colorVertexShaderSource = sparkReadFile(vertexPath, true, &size);
@@ -47,10 +62,24 @@ SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertex
     return shader;
 }
 
+/**
+ * Called when the window is resized.
+ * 
+ * @param window window that was resized
+ * @param ww window width
+ * @param wh window height
+ * 
+ */
 void sparkOnWindowResize(GLFWwindow* window, int ww, int wh) {
     glViewport(0, 0, ww, wh);
 }
 
+/**
+ * Creates renderer object groups from the renderer's scene.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
 void sparkCreateAllRendererObjectGroups(SparkRenderer* renderer) {
     sparkDeleteAllRendererObjectGroups(renderer);
 
@@ -61,6 +90,13 @@ void sparkCreateAllRendererObjectGroups(SparkRenderer* renderer) {
     }
 }
 
+/**
+ * Creates renderer object groups from a game object.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param gameObject a pointer to a game object
+ * 
+ */
 void sparkCreateRendererObjectGroups(SparkRenderer* renderer, SparkGameObject* gameObject) {
     int numOfComponents = vector_size(gameObject->components);
     for(int i = 0; i < numOfComponents; i++) {
@@ -80,6 +116,14 @@ void sparkCreateRendererObjectGroups(SparkRenderer* renderer, SparkGameObject* g
     }
 }
 
+/**
+ * Creates renderer object group from a component.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param gameObject a pointer to a game object
+ * @param component a pointer to a component
+ * 
+ */
 SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer, SparkGameObject* gameObject, SparkComponent* component) {
     switch(component->type) {
         case COMPONENT_TYPE_2D_RENDERER:
@@ -126,6 +170,12 @@ SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer,
     }
 }
 
+/**
+ * Updates all renderer object groups.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
 void sparkUpdateAllRendererObjectGroups(SparkRenderer* renderer) {
     int numOfGroups = vector_size(renderer->rendererObjectGroups);
     for(int i = 0; i < numOfGroups; i++) {
@@ -134,6 +184,13 @@ void sparkUpdateAllRendererObjectGroups(SparkRenderer* renderer) {
     }
 }
 
+/**
+ * Updates a renderer object group.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param rendererObjectGroup a pointer to a renderer object group
+ * 
+ */
 void sparkUpdateRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup) {
     int numOfObjects = vector_size(rendererObjectGroup->objects);
     for(int i = 0; i < numOfObjects; i++) {
@@ -142,6 +199,14 @@ void sparkUpdateRendererObjectGroup(SparkRenderer* renderer, SparkRendererObject
     }
 }
 
+/**
+ * Updates a renderer object.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param rendererObject a pointer to a renderer object
+ * @param i index in a renderer object group
+ * 
+ */
 void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* rendererObject, int i) {
     sparkBindRendererObject(rendererObject);
     switch(rendererObject->component->type) {
@@ -167,6 +232,12 @@ void sparkUpdateRendererObject(SparkRenderer* renderer, SparkRendererObject* ren
     sparkUnbindRendererObject(rendererObject);
 }
 
+/**
+ * Deletes all renderer object groups.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
 void sparkDeleteAllRendererObjectGroups(SparkRenderer* renderer) {
     int numOfGroups = vector_size(renderer->rendererObjectGroups);
     for(int i = 0; i < numOfGroups; i++) {
@@ -177,6 +248,13 @@ void sparkDeleteAllRendererObjectGroups(SparkRenderer* renderer) {
     renderer->rendererObjectGroups = vector_create();
 }
 
+/**
+ * Deletes a renderer object group.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param rendererObjectGroup a pointer to a renderer object group
+ * 
+ */
 void sparkDeleteRendererObjectGroup(SparkRenderer* renderer, SparkRendererObjectGroup* rendererObjectGroup) {
     int numOfObjects = vector_size(rendererObjectGroup->objects);
     for(int i = 0; i < numOfObjects; i++) {
@@ -185,6 +263,12 @@ void sparkDeleteRendererObjectGroup(SparkRenderer* renderer, SparkRendererObject
     }
 }
 
+/**
+ * Renders the current scene.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
 void sparkRender(SparkRenderer* renderer) {
     /* [temporary] Create model matrices */
     SparkMat4 model, view, proj;
@@ -308,6 +392,13 @@ void sparkRender(SparkRenderer* renderer) {
     glfwTerminate();
 }
 
+/**
+ * Loads a new scene.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param scene scene to be loaded
+ * 
+ */
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene) {
     renderer->scene = scene;
     sparkCreateAllRendererObjectGroups(renderer);

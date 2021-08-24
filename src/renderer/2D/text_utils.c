@@ -1,3 +1,11 @@
+/**
+ * Creates a new renderer object based on the COMPONENT_TYPE_TEXT_RENDERER component.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param gameObject a pointer to a game object
+ * @param component a pointer to a component
+ * 
+ */
 SparkRendererObject sparkCreateRendererObjectText(SparkRenderer* renderer, SparkGameObject* gameObject, SparkComponent* component) {
     SparkRendererObject rendererObject = {
         .gameObject = gameObject,
@@ -9,6 +17,14 @@ SparkRendererObject sparkCreateRendererObjectText(SparkRenderer* renderer, Spark
     return rendererObject;
 }
 
+/**
+ * Updates a text renderer object.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param rendererObject a pointer to a renderer object
+ * @param i index in a renderer object group
+ * 
+ */
 void sparkUpdateRendererObjectText(SparkRenderer* renderer, SparkRendererObject* rendererObject, int i) {
     int ww = renderer->ww;
     int wh = renderer->wh;

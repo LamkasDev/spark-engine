@@ -1,6 +1,12 @@
 #include "../components/component_data.h"
 #include "../utils/hashmap_utils.h"
 
+/**
+ * Creates a new textures.
+ * 
+ * @param name name of the texture
+ * 
+ */
 SparkTexture sparkCreateTexture(char* name) {
     char* uuid = sparkGenerateUUID();
     int filter = GL_NEAREST;
@@ -19,6 +25,13 @@ SparkTexture sparkCreateTexture(char* name) {
     return texture;
 }
 
+/**
+ * Loads a textures from a file.
+ * 
+ * @param texture a pointer to a texture
+ * @param path path to the texture file
+ * 
+ */
 void sparkLoadTexture(SparkTexture* texture, char* path) {
     SparkComponentData* filterData = hashmap_get(texture->options, &(SparkComponentData){ .key = "filter" });
     int* filter = filterData->data;

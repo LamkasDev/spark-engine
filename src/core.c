@@ -27,6 +27,9 @@
 #include "app/app.h"
 #include "editor/editor.h"
 
+/**
+ * Main engine loop.
+ */
 void run() {
     printf("=========\n");
     printf("Started Spark Engine (%s)...\n", SPARK_VERSION);

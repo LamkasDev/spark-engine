@@ -1,4 +1,6 @@
-/* i know this is not correct, shhhhhhh */
+/**
+ * Generates a "random" UUID.
+ */
 char* sparkGenerateUUID() {
     int length = 32;
     char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-";

@@ -2,6 +2,12 @@
 #include "../components/component_data.h"
 #include "../utils/hashmap_utils.h"
 
+/**
+ * Creates a new font.
+ * 
+ * @param name name of the font
+ * 
+ */
 SparkFont sparkCreateFont(char* name) {
     char* uuid = sparkGenerateUUID();
     SparkFont font = {
@@ -13,6 +19,14 @@ SparkFont sparkCreateFont(char* name) {
     return font;
 }
 
+/**
+ * Loads a font from a file.
+ * 
+ * @param library a pointer to a font library
+ * @param font a pointer to a font
+ * @param path path to the font file
+ * 
+ */
 void sparkLoadFont(FT_Library* library, SparkFont* font, char* path) {
     FT_Face face;
     FT_New_Face(*library, path, 0, &face);

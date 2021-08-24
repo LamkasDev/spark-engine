@@ -1,3 +1,6 @@
+/**
+ * Creates a new store.
+ */
 SparkStore sparkCreateStore() {
     SparkStore store = {
         .integers = vector_create(),

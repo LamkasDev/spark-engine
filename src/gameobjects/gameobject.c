@@ -1,3 +1,6 @@
+/**
+ * Creates a new game object.
+ */
 SparkGameObject sparkCreateGameObject() {
     SparkGameObject gameObject = {
         .pos = { 0, 0, 0 },
