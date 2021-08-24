@@ -8,3 +8,4 @@ build/*
 libs/lib/libglfw3.a
 libs/lib/libcglm.a
 libs/lib/libfreetype.a
+libs/lib/libyaml.a
