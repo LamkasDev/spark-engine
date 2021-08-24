@@ -114,8 +114,8 @@ SparkRendererObjectGroup sparkCreateRendererObjectGroup(SparkRenderer* renderer,
             };
 
             SparkComponentData* textData = hashmap_get(component->data, &(SparkComponentData){ .key = "text" });
-            char** text = (char**)((intptr_t)renderer->store.strings + (intptr_t)textData->data);
-            for(int i = 0; i < strlen(*text); i++) {
+            char* text = renderer->store.strings[(uintptr_t)textData->data];
+            for(int i = 0; i < strlen(text); i++) {
                 SparkRendererObject rendererObject = sparkCreateRendererObjectText(renderer, gameObject, component);
                 sparkInitializeRendererObject(&rendererObject);
                 sparkUpdateRendererObject(renderer, &rendererObject, 0);
@@ -272,10 +272,10 @@ void sparkRender(SparkRenderer* renderer) {
 
                         case COMPONENT_TYPE_TEXT_RENDERER: {
                             SparkComponentData* textData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "text" });
-                            char** text = (char**)((intptr_t)renderer->store.strings + (intptr_t)textData->data);
+                            char* text = renderer->store.strings[(uintptr_t)textData->data];
                             SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
                             SparkFont* font = fontData->data;
-                            SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = (*text)[j] });
+                            SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[j] });
 
                             GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
                             glUniform1f(uniTex1, 0);

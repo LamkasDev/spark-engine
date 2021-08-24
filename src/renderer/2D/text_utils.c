@@ -14,21 +14,21 @@ void sparkUpdateRendererObjectText(SparkRenderer* renderer, SparkRendererObject*
     int wh = renderer->wh;
 
     SparkComponentData* textData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "text" });
-    char** text = (char**)((intptr_t)renderer->store.strings + (intptr_t)textData->data);
+    char* text = renderer->store.strings[(uintptr_t)textData->data];
     SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
     SparkFont* font = fontData->data;
     SparkComponentData* fontSizeData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "fontSize" });
-    int* fontSize = (int*)((intptr_t)renderer->store.integers + (intptr_t)fontSizeData->data);
-    GLfloat fontScale = *fontSize / 48.0f;
+    int fontSize = renderer->store.integers[(uintptr_t)fontSizeData->data];
+    GLfloat fontScale = fontSize / 48.0f;
 
-    SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = (*text)[i] });
+    SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[i] });
     GLfloat currentCharacterW = currentCharacter->size.x * fontScale;
     GLfloat currentCharacterH = currentCharacter->size.y * fontScale;
 
     GLfloat xOffset = 0.0f;
     GLfloat yOffset = 0.0f;
     for(int k = 0; k < i; k++) {
-        SparkCharacter* character = hashmap_get(font->characters, &(SparkCharacter){ .c = (*text)[k] });
+        SparkCharacter* character = hashmap_get(font->characters, &(SparkCharacter){ .c = text[k] });
         xOffset += (character->advance >> 6) * fontScale;
     }
 

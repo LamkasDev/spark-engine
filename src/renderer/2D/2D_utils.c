@@ -16,10 +16,10 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
     SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
     SparkMaterial* material = materialData->data;
     SparkComponentData* shapeData = hashmap_get(material->data, &(SparkComponentData){ .key = "shape" });
-    int* shape = (int*)((intptr_t)renderer->store.integers + (intptr_t)shapeData->data);
+    int shape = renderer->store.integers[(uintptr_t)shapeData->data];
 
     SparkVector2* points = vector_create();
-    switch(*shape) {
+    switch(shape) {
         case RENDERER_SHAPE_QUAD:
         case RENDERER_SHAPE_EMPTY_QUAD: {
             GLfloat xPos = (rendererObject->gameObject->pos.x / ww) * 2.0f;
@@ -43,10 +43,10 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
                 vector_add(&points, p4);
             } else {
                 GLfloat twicePi = 2.0f * GLM_PI;
+                float border = renderer->store.floats[(uintptr_t)borderData->data];
 
-                float* border = (float*)((intptr_t)renderer->store.floats + (intptr_t)borderData->data);
-                GLfloat xBorderRad = xSize * (*border);
-                GLfloat yBorderRad = ySize * (*border);
+                GLfloat xBorderRad = xSize * border;
+                GLfloat yBorderRad = ySize * border;
                 GLfloat x = 0.0f;
                 GLfloat y = 0.0f;
                 GLfloat xSize0 = rendererObject->gameObject->scale.x / ww;
@@ -119,12 +119,12 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
         switch(rendererObject->component->type) {
             case COMPONENT_TYPE_2D_RENDERER: {
                 SparkComponentData* colorData = hashmap_get(material->data, &(SparkComponentData){ .key = "color" });
-                SparkColor* color = (SparkColor*)((intptr_t)renderer->store.colors + (intptr_t)colorData->data);
+                SparkColor color = renderer->store.colors[(uintptr_t)colorData->data];
             
                 /* Add colors */
-                vector_add(&vertices, color->r);
-                vector_add(&vertices, color->g);
-                vector_add(&vertices, color->b);
+                vector_add(&vertices, color.r);
+                vector_add(&vertices, color.g);
+                vector_add(&vertices, color.b);
                 break;
             }
 
@@ -160,7 +160,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
     }
 
     GLuint* indices = vector_create();
-    switch(*shape) {
+    switch(shape) {
         case RENDERER_SHAPE_QUAD: {
             SparkComponentData* borderData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "border" });
             if(borderData == NULL) {
