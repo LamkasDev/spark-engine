@@ -49,58 +49,8 @@ void sparkLoadSceneFromJSON(SparkRenderer* renderer, SparkScene* scene, const un
             cJSON* componentsDataData = cJSON_GetObjectItemCaseSensitive(componentData, "data");
             cJSON* componentDataData = NULL;
             cJSON_ArrayForEach(componentDataData, componentsDataData) {
-                char* componentDataKey = cJSON_GetObjectItemCaseSensitive(componentDataData, "key")->valuestring;
-                cJSON *componentDataValue = cJSON_GetObjectItemCaseSensitive(componentDataData, "value");
-
-                switch(componentDataValue->type) {
-                    case cJSON_Number: {
-                        float value = componentDataValue->valuedouble;
-                        hashmap_set(component->data, &(SparkComponentData){ .key = componentDataKey, .data = sparkCreateStoreFloat(&renderer->store, value) });
-                        break;
-                    }
-
-                    case cJSON_String: {
-                        bool isReference = false;
-                        char* validReferencePrefixes[4] = { "&SparkShader@", "&SparkTexture@", "&SparkMaterial@", "&SparkFont@" };
-                        for(int i = 0; i < (sizeof(validReferencePrefixes) / sizeof(char*)); i++) {
-                            if(sparkStringStartsWith(componentDataValue->valuestring, validReferencePrefixes[i])) {
-                                char* valueReferenceName = sparkStringReplace(componentDataValue->valuestring, validReferencePrefixes[i], "");
-                                switch(i) {
-                                    case 0: {
-                                        SparkShader* valueReference = hashmap_get(renderer->shaders, &(SparkShader){ .name = valueReferenceName });
-                                        hashmap_set(component->data, &(SparkComponentData){ .key = componentDataKey, .data = valueReference });
-                                        break;
-                                    }
-
-                                    case 1: {
-                                        SparkTexture* valueReference = hashmap_get(renderer->fonts, &(SparkTexture){ .name = valueReferenceName });
-                                        hashmap_set(component->data, &(SparkComponentData){ .key = componentDataKey, .data = valueReference });
-                                        break;
-                                    }
-
-                                    case 2: {
-                                        SparkMaterial* valueReference = hashmap_get(renderer->materials, &(SparkMaterial){ .name = valueReferenceName });
-                                        hashmap_set(component->data, &(SparkComponentData){ .key = componentDataKey, .data = valueReference });
-                                        break;
-                                    }
-
-                                    case 3: {
-                                        SparkFont* valueReference = hashmap_get(renderer->fonts, &(SparkFont){ .name = valueReferenceName });
-                                        hashmap_set(component->data, &(SparkComponentData){ .key = componentDataKey, .data = valueReference });
-                                        break;
-                                    }
-                                }
-
-                                isReference = true;
-                            }
-                        }
-
-                        if(!isReference) {
-                            hashmap_set(component->data, &(SparkComponentData){ .key = componentDataKey, .data = sparkCreateStoreString(&renderer->store, componentDataValue->valuestring) });
-                        }
-                        break;
-                    }
-                }
+                SparkComponentData componentDataItem = sparkCreateComponentDataFromJSON(renderer, componentDataData);
+                hashmap_set(component->data, &componentDataItem);
             }
         }
 
@@ -110,4 +60,77 @@ void sparkLoadSceneFromJSON(SparkRenderer* renderer, SparkScene* scene, const un
     /* TODO: delete the JSON tree, after implementing a system where char* pointers are transfered somewhere else */
     /* - can't use SparkStore for this, because hashmap functions don't know about SparkStore at all */
     //cJSON_Delete(tree);
+}
+
+/**
+ * Creates SparkComponentData from cJSON data node.
+ * 
+ * @param renderer a pointer to a renderer
+ * @param data cJSON data node
+ * 
+ */
+SparkComponentData sparkCreateComponentDataFromJSON(SparkRenderer* renderer, cJSON* data) {
+    char* componentDataKey = cJSON_GetObjectItemCaseSensitive(data, "key")->valuestring;
+    cJSON *componentDataValue = cJSON_GetObjectItemCaseSensitive(data, "value");
+    SparkComponentData componentData = {
+        .key = componentDataKey
+    };
+
+    switch(componentDataValue->type) {
+        case cJSON_Number: {
+            float value = componentDataValue->valuedouble;
+            componentData.data = sparkCreateStoreFloat(&renderer->store, value);
+            break;
+        }
+
+        case cJSON_False:
+        case cJSON_True: {
+            componentData.data = sparkCreateStoreInteger(&renderer->store, componentDataValue->type == cJSON_True);
+            break;
+        }
+
+        case cJSON_String: {
+            bool isReference = false;
+            char* validReferencePrefixes[4] = { "&SparkShader@", "&SparkTexture@", "&SparkMaterial@", "&SparkFont@" };
+            for(int i = 0; i < (sizeof(validReferencePrefixes) / sizeof(char*)); i++) {
+                if(sparkStringStartsWith(componentDataValue->valuestring, validReferencePrefixes[i])) {
+                    char* valueReferenceName = sparkStringReplace(componentDataValue->valuestring, validReferencePrefixes[i], "");
+                    switch(i) {
+                        case 0: {
+                            SparkShader* valueReference = hashmap_get(renderer->shaders, &(SparkShader){ .name = valueReferenceName });
+                            componentData.data = valueReference;
+                            break;
+                        }
+
+                        case 1: {
+                            SparkTexture* valueReference = hashmap_get(renderer->fonts, &(SparkTexture){ .name = valueReferenceName });
+                            componentData.data = valueReference;
+                            break;
+                        }
+
+                        case 2: {
+                            SparkMaterial* valueReference = hashmap_get(renderer->materials, &(SparkMaterial){ .name = valueReferenceName });
+                            componentData.data = valueReference;
+                            break;
+                        }
+
+                        case 3: {
+                            SparkFont* valueReference = hashmap_get(renderer->fonts, &(SparkFont){ .name = valueReferenceName });
+                            componentData.data = valueReference;
+                            break;
+                        }
+                    }
+
+                    isReference = true;
+                }
+            }
+
+            if(!isReference) {
+                componentData.data = sparkCreateStoreString(&renderer->store, componentDataValue->valuestring);
+            }
+            break;
+        }
+    }
+
+    return componentData;
 }
