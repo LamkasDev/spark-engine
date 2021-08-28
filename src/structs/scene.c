@@ -28,6 +28,5 @@ void sparkLoadSceneFromFile(void* _renderer, SparkScene* scene, char* path) {
 
     int size;
     const unsigned char* sceneRaw = sparkReadFile(path, false, &size);
-    //char* sceneData = sparkStringReplace(sceneRaw, "\r\n", "\n");
     sparkLoadSceneFromJSON(renderer, scene, sceneRaw);
 }

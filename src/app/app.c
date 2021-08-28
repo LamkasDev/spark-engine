@@ -28,51 +28,49 @@ void sparkSetupAppRenderer(SparkApp* app) {
 }
 
 /**
- * Compiles default shaders for the engine.
+ * Creates default shaders needed by the engine.
  * 
  * @param app a pointer to an app
  * 
  */
-void sparkCompileDefaultShaders(SparkApp* app) {
-    sparkCompileShader(&app->renderer, "2DColor", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_color_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_color_fragment.shader")));
-    sparkCompileShader(&app->renderer, "2DTexture", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_tex_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/2D_tex_fragment.shader")));
-    sparkCompileShader(&app->renderer, "3DColor", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/3D_color_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/3D_color_fragment.shader")));
-    sparkCompileShader(&app->renderer, "3DTexture", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/3D_tex_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/3D_tex_fragment.shader")));
-    sparkCompileShader(&app->renderer, "Text", sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/text_vertex.shader")), sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/shaders/text_fragment.shader")));
+void sparkCreateDefaultShaders(SparkApp* app) {
+    int size;
+    const unsigned char* shadersRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/app/spark_objects/app_shaders.sobj")), false, &size);
+    sparkCreateShadersFromJSON(&app->renderer, shadersRaw);
 }
 
 /**
- * Loads default fonts for the engine.
+ * Creates default fonts needed by the engine.
  * 
  * @param app a pointer to an app
  * 
  */
-void sparkLoadDefaultFonts(SparkApp* app) {
-    SparkFont font_0 = sparkCreateFont("Arial");
-    sparkLoadFont(&app->renderer.ft, &font_0, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/fonts/Arial.ttf")));
-    hashmap_set(app->renderer.fonts, &font_0);
+void sparkCreateDefaultFonts(SparkApp* app) {
+    int size;
+    const unsigned char* fontsRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/app/spark_objects/app_fonts.sobj")), false, &size);
+    sparkCreateFontsFromJSON(&app->renderer, fontsRaw);
 }
 
 /**
- * Loads default textures for the engine.
+ * Creates default textures needed by the engine.
  * 
  * @param app a pointer to an app
  * 
  */
-void sparkLoadDefaultTextures(SparkApp* app) {
-
+void sparkCreateDefaultTextures(SparkApp* app) {
+    int size;
+    const unsigned char* texturesRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/app/spark_objects/app_textures.sobj")), false, &size);
+    sparkCreateTexturesFromJSON(&app->renderer, texturesRaw);
 }
 
 /**
- * Creates default materials for the engine.
+ * Creates default materials needed by the engine.
  * 
  * @param app a pointer to an app
  * 
  */
 void sparkCreateDefaultMaterials(SparkApp* app) {
-    int shape = RENDERER_SHAPE_QUAD;
-    SparkShader* shader_1 = hashmap_get(app->renderer.shaders, &(SparkShader){ .name = "Text" });
-
-    SparkMaterial material_0 = sparkCreateMaterial("Text", shader_1);
-    hashmap_set(app->renderer.materials, &material_0);
+    int size;
+    const unsigned char* materialsRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/app/spark_objects/app_materials.sobj")), false, &size);
+    sparkCreateMaterialsFromJSON(&app->renderer, materialsRaw);
 }

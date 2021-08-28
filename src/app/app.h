@@ -11,9 +11,9 @@ typedef struct SparkApp SparkApp;
 
 void sparkSetupApp(SparkApp* app);
 void sparkSetupAppRenderer(SparkApp* app);
-void sparkCompileDefaultShaders(SparkApp* app);
-void sparkLoadDefaultFonts(SparkApp* app);
-void sparkLoadDefaultTextures(SparkApp* app);
+void sparkCreateDefaultShaders(SparkApp* app);
+void sparkCreateDefaultFonts(SparkApp* app);
+void sparkCreateDefaultTextures(SparkApp* app);
 void sparkCreateDefaultMaterials(SparkApp* app);
 
 #endif

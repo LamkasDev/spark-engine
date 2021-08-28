@@ -1,33 +1,37 @@
 /**
- * Compiles shaders needed by the editor.
+ * Creates shaders needed by the editor.
  * 
  * @param app a pointer to an app
  * 
  */
-void sparkCompileEditorShaders(SparkApp* app) {
-    
+void sparkCreateEditorShaders(SparkApp* app) {
+    int size;
+    const unsigned char* shadersRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/editor/spark_objects/editor_shaders.sobj")), false, &size);
+    sparkCreateShadersFromJSON(&app->renderer, shadersRaw);
 }
 
 /**
- * Loads fonts needed by the editor.
+ * Creates fonts needed by the editor.
  * 
  * @param app a pointer to an app
  * 
  */
-void sparkLoadEditorFonts(SparkApp* app) {
-
+void sparkCreateEditorFonts(SparkApp* app) {
+    int size;
+    const unsigned char* fontsRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/editor/spark_objects/editor_fonts.sobj")), false, &size);
+    sparkCreateFontsFromJSON(&app->renderer, fontsRaw);
 }
 
 /**
- * Loads textures needed by the editor.
+ * Creates textures needed by the editor.
  * 
  * @param app a pointer to an app
  * 
  */
-void sparkLoadEditorTextures(SparkApp* app) {
-    SparkTexture texture_0 = sparkCreateTexture("DVD");
-    sparkLoadTexture(&texture_0, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/textures/dvd.png")));
-    hashmap_set(app->renderer.textures, &texture_0);
+void sparkCreateEditorTextures(SparkApp* app) {
+    int size;
+    const unsigned char* texturesRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/editor/spark_objects/editor_textures.sobj")), false, &size);
+    sparkCreateTexturesFromJSON(&app->renderer, texturesRaw);
 }
 
 /**
@@ -37,23 +41,9 @@ void sparkLoadEditorTextures(SparkApp* app) {
  * 
  */
 void sparkCreateEditorMaterials(SparkApp* app) {
-    SparkShader* shader_0 = hashmap_get(app->renderer.shaders, &(SparkShader){ .name = "2DTexture" });
-    SparkShader* shader_1 = hashmap_get(app->renderer.shaders, &(SparkShader){ .name = "2DColor" });
-
-    SparkMaterial material_0 = sparkCreateMaterial("Color_0", shader_1);
-    hashmap_set(material_0.data, &(SparkComponentData){ .key = "color", .data = sparkCreateStoreColor(&app->renderer.store, sparkCreateColorFromHex(0xffffff, 1.0f)) });
-    hashmap_set(material_0.data, &(SparkComponentData){ .key = "shape", .data = sparkCreateStoreFloat(&app->renderer.store, RENDERER_SHAPE_QUAD) });
-    hashmap_set(app->renderer.materials, &material_0);
-
-    SparkMaterial material_1 = sparkCreateMaterial("Color_1", shader_1);
-    hashmap_set(material_1.data, &(SparkComponentData){ .key = "color", .data = sparkCreateStoreColor(&app->renderer.store, sparkCreateColorFromHex(0x2b2b2b, 1.0f)) });
-    hashmap_set(material_1.data, &(SparkComponentData){ .key = "shape", .data = sparkCreateStoreFloat(&app->renderer.store, RENDERER_SHAPE_QUAD) });
-    hashmap_set(app->renderer.materials, &material_1);
-
-    SparkMaterial material_2 = sparkCreateMaterial("Color_2", shader_1);
-    hashmap_set(material_2.data, &(SparkComponentData){ .key = "color", .data = sparkCreateStoreColor(&app->renderer.store, sparkCreateColorFromHex(0x383838, 1.0f)) });
-    hashmap_set(material_2.data, &(SparkComponentData){ .key = "shape", .data = sparkCreateStoreFloat(&app->renderer.store, RENDERER_SHAPE_QUAD) });
-    hashmap_set(app->renderer.materials, &material_2);
+    int size;
+    const unsigned char* materialsRaw = sparkReadFile(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/editor/spark_objects/editor_materials.sobj")), false, &size);
+    sparkCreateMaterialsFromJSON(&app->renderer, materialsRaw);
 }
 
 /**
@@ -64,7 +54,7 @@ void sparkCreateEditorMaterials(SparkApp* app) {
  */
 SparkScene sparkCreateEditorScene(SparkApp* app) {
     SparkScene scene = sparkCreateScene("Editor");
-    sparkLoadSceneFromFile(&app->renderer, &scene, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/spark_objects/editor_scene.sobj")));
+    sparkLoadSceneFromFile(&app->renderer, &scene, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/editor/spark_objects/editor_scene.sobj")));
 
     return scene;
 }

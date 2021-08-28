@@ -47,24 +47,24 @@ void run() {
 
     printf("Compiling shaders...\n");
     clock_t begin_1 = clock();
-    sparkCompileDefaultShaders(&app);
-    sparkCompileEditorShaders(&app);
+    sparkCreateDefaultShaders(&app);
+    sparkCreateEditorShaders(&app);
     clock_t end_1 = clock();
     double elapsed_1 = (double)(end_1 - begin_1) / CLOCKS_PER_SEC;
     printf("Compiled shaders (%i shaders in %.3fs)!\n", hashmap_count(app.renderer.shaders), elapsed_1);
 
     printf("Loading fonts...\n");
     clock_t begin_2 = clock();
-    sparkLoadDefaultFonts(&app);
-    sparkLoadEditorFonts(&app);
+    sparkCreateDefaultFonts(&app);
+    sparkCreateEditorFonts(&app);
     clock_t end_2 = clock();
     double elapsed_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
     printf("Loaded fonts (%i fonts in %.3fs)!\n", hashmap_count(app.renderer.fonts), elapsed_1);
 
     printf("Loading textures...\n");
     clock_t begin_5 = clock();
-    sparkLoadDefaultTextures(&app);
-    sparkLoadEditorTextures(&app);
+    sparkCreateDefaultTextures(&app);
+    sparkCreateEditorTextures(&app);
     clock_t end_5 = clock();
     double elapsed_5 = (double)(end_5 - begin_5) / CLOCKS_PER_SEC;
     printf("Loaded textures (%i textures in %.3fs)!\n", hashmap_count(app.renderer.textures), elapsed_5);
