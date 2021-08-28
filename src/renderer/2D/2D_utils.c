@@ -31,7 +31,7 @@ void sparkUpdateRendererObject2D(SparkRenderer* renderer, SparkRendererObject* r
     SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
     SparkMaterial* material = materialData->data;
     SparkComponentData* shapeData = hashmap_get(material->data, &(SparkComponentData){ .key = "shape" });
-    int shape = renderer->store.integers[(uintptr_t)shapeData->data];
+    int shape = renderer->store.floats[(uintptr_t)shapeData->data];
 
     SparkVector2* points = vector_create();
     switch(shape) {

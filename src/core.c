@@ -24,6 +24,7 @@
 #include "utils/store_utils.h"
 #include "renderer/renderer.h"
 
+#include "utils/json_utils.h"
 #include "app/app.h"
 #include "editor/editor.h"
 

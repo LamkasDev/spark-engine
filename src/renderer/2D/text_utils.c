@@ -34,7 +34,7 @@ void sparkUpdateRendererObjectText(SparkRenderer* renderer, SparkRendererObject*
     SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
     SparkFont* font = fontData->data;
     SparkComponentData* fontSizeData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "fontSize" });
-    int fontSize = renderer->store.integers[(uintptr_t)fontSizeData->data];
+    int fontSize = renderer->store.floats[(uintptr_t)fontSizeData->data];
     GLfloat fontScale = fontSize / 48.0f;
 
     SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[i] });

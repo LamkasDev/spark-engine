@@ -40,3 +40,16 @@ char* sparkStringReplace(char* orig, char* rep, char* with) {
     strcpy(tmp, orig);
     return result;
 }
+
+/**
+ * Returns true, if the original string starts with the given substring.
+ * 
+ * @param orig source string
+ * @param mat substring to match
+ * 
+ */
+bool sparkStringStartsWith(const char *orig, const char *mat) {
+    size_t lenorig = strlen(orig),
+           lenmat = strlen(mat);
+    return lenorig < lenmat ? false : memcmp(mat, orig, lenmat) == 0;
+}

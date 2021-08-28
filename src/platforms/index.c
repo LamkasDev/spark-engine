@@ -29,6 +29,7 @@
 #include "../structs/vector_2.c"
 #include "../structs/vector_3.c"
 #include "../utils/hashmap_utils.c"
+#include "../utils/json_utils.c"
 #include "../utils/math.c"
 #include "../utils/print.c"
 #include "../utils/store_utils.c"

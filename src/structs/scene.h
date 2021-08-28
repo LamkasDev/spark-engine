@@ -10,5 +10,6 @@ struct SparkScene {
 };
 typedef struct SparkScene SparkScene;
 SparkScene sparkCreateScene(char* name);
+void sparkLoadSceneFromFile(void* _renderer, SparkScene* scene, char* path);
 
 #endif
