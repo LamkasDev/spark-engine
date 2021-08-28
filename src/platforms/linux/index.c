@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <cglm/cglm.h>
 
+#include <json/cJSON.h>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 

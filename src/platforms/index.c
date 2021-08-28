@@ -3,6 +3,7 @@
 /* too lazy to put these in make */
 #include "../../libs/include/vector/vector.c"
 #include "../../libs/include/hashmap/hashmap.c"
+#include "../../libs/include/json/cJSON.c"
 
 #include "../core.c"
 #include "../app/app.c"
