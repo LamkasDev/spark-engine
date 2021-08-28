@@ -1,0 +1,50 @@
+{
+	"type": "scene",
+	"gameObjects": [
+		{
+			"uuid": "a",
+			"pos": [0.0,0.0,0.0],
+			"scale": [-1.0,-1.0,0.0],
+			"components": [
+				{
+					"uuid": "a0",
+					"type": 0,
+					"data": [
+						{ "key": "material", "value": "&SparkMaterial@Color_2" }
+					]
+				}
+			]
+		},
+		{
+			"uuid": "b",
+			"pos": [0.0,0.0,0.0],
+			"scale": [180.0,-1.0,0.0],
+			"components": [
+				{
+					"uuid": "b0",
+					"type": 0,
+					"data": [
+						{ "key": "material", "value": "&SparkMaterial@Color_1" }
+					]
+				}
+			]
+		},
+		{
+			"uuid": "c",
+			"pos": [10.0,10.0,0.0],
+			"scale": [160.0,30.0,0.0],
+			"components": [
+				{
+					"uuid": "c0",
+					"type": 4,
+					"data": [
+						{ "key": "text", "value": "Spark" },
+						{ "key": "font", "value": "&SparkFont@Arial" },
+						{ "key": "fontSize", "value": 24 },
+						{ "key": "material", "value": "&SparkMaterial@Text" }
+					]
+				}
+			]
+		}
+	]
+}

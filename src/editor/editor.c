@@ -64,7 +64,7 @@ void sparkCreateEditorMaterials(SparkApp* app) {
  */
 SparkScene sparkCreateEditorScene(SparkApp* app) {
     SparkScene scene = sparkCreateScene("Editor");
-    sparkLoadSceneFromFile(&app->renderer, &scene, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/scenes/editor.scene")));
+    sparkLoadSceneFromFile(&app->renderer, &scene, sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/spark_objects/editor_scene.sobj")));
 
     return scene;
 }
