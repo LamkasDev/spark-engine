@@ -1,0 +1,11 @@
+{
+	"type": "materials",
+	"materials": [
+		{
+			"uuid": "smat-0",
+			"name": "Text",
+			"shader": "&SparkShader@Text",
+			"data": []
+		}
+	]
+}

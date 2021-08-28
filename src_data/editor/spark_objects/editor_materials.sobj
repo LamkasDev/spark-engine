@@ -1,0 +1,32 @@
+{
+	"type": "materials",
+	"materials": [
+		{
+			"uuid": "smat-A",
+			"name": "Color_0",
+			"shader": "&SparkShader@2D_Color",
+			"data": [
+				{ "key": "color", "data": [255,255,255] },
+				{ "key": "shape", "data": 0 }
+			]
+		},
+		{
+			"uuid": "smat-B",
+			"name": "Color_1",
+			"shader": "&SparkShader@2D_Color",
+			"data": [
+				{ "key": "color", "data": [43,43,43] },
+				{ "key": "shape", "data": 0 }
+			]
+		},
+		{
+			"uuid": "smat-C",
+			"name": "Color_2",
+			"shader": "&SparkShader@2D_Color",
+			"data": [
+				{ "key": "color", "data": [56,56,56] },
+				{ "key": "shape", "data": 0 }
+			]
+		}
+	]
+}

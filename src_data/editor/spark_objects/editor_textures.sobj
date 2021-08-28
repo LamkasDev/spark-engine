@@ -1,0 +1,10 @@
+{
+	"type": "textures",
+	"textures": [
+		{
+			"uuid": "stex-A",
+			"name": "DVD",
+			"path": "/textures/dvd.png"
+		}
+	]
+}

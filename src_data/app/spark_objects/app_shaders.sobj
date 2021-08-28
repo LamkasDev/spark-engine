@@ -1,0 +1,35 @@
+{
+	"type": "shaders",
+	"shaders": [
+		{
+			"uuid": "ssha-0",
+			"name": "2D_Color",
+			"vertexPath": "/app/shaders/2D_color_vertex.shader",
+			"fragmentPath": "/app/shaders/2D_color_fragment.shader"
+		},
+		{
+			"uuid": "ssha-1",
+			"name": "2D_Texture",
+			"vertexPath": "/app/shaders/2D_tex_vertex.shader",
+			"fragmentPath": "/app/shaders/2D_tex_fragment.shader"
+		},
+		{
+			"uuid": "ssha-2",
+			"name": "3D_Color",
+			"vertexPath": "/app/shaders/3D_color_vertex.shader",
+			"fragmentPath": "/app/shaders/3D_color_fragment.shader"
+		},
+		{
+			"uuid": "ssha-3",
+			"name": "3D_Texture",
+			"vertexPath": "/app/shaders/3D_tex_vertex.shader",
+			"fragmentPath": "/app/shaders/3D_tex_fragment.shader"
+		},
+		{
+			"uuid": "ssha-5",
+			"name": "Text",
+			"vertexPath": "/app/shaders/text_vertex.shader",
+			"fragmentPath": "/app/shaders/text_fragment.shader"
+		}
+	]
+}

@@ -2,46 +2,46 @@
 	"type": "scene",
 	"gameObjects": [
 		{
-			"uuid": "a",
+			"uuid": "sgob-A",
 			"pos": [0.0,0.0,0.0],
 			"scale": [-1.0,-1.0,0.0],
 			"components": [
 				{
-					"uuid": "a0",
+					"uuid": "scom-A",
 					"type": 0,
 					"data": [
-						{ "key": "material", "value": "&SparkMaterial@Color_2" }
+						{ "key": "material", "data": "&SparkMaterial@Color_2" }
 					]
 				}
 			]
 		},
 		{
-			"uuid": "b",
+			"uuid": "sgob-B",
 			"pos": [0.0,0.0,0.0],
 			"scale": [180.0,-1.0,0.0],
 			"components": [
 				{
-					"uuid": "b0",
+					"uuid": "scom-B",
 					"type": 0,
 					"data": [
-						{ "key": "material", "value": "&SparkMaterial@Color_1" }
+						{ "key": "material", "data": "&SparkMaterial@Color_1" }
 					]
 				}
 			]
 		},
 		{
-			"uuid": "c",
+			"uuid": "sgob-C",
 			"pos": [10.0,10.0,0.0],
 			"scale": [160.0,30.0,0.0],
 			"components": [
 				{
-					"uuid": "c0",
+					"uuid": "scom-C",
 					"type": 4,
 					"data": [
-						{ "key": "text", "value": "Spark" },
-						{ "key": "font", "value": "&SparkFont@Arial" },
-						{ "key": "fontSize", "value": 24 },
-						{ "key": "material", "value": "&SparkMaterial@Text" }
+						{ "key": "text", "data": "Spark" },
+						{ "key": "font", "data": "&SparkFont@Arial" },
+						{ "key": "fontSize", "data": 24 },
+						{ "key": "material", "data": "&SparkMaterial@Text" }
 					]
 				}
 			]

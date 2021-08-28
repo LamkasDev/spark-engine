@@ -1,0 +1,10 @@
+{
+	"type": "fonts",
+	"fonts": [
+		{
+			"uuid": "sfon-0",
+			"name": "Arial",
+			"path": "/app/fonts/Arial.ttf"
+		}
+	]
+}
