@@ -9,7 +9,7 @@ CLEAN_COMMAND=
 
 ifeq ($(OS),Windows_NT)
 	CC_FILE=./src/platforms/windows/index.c
-	POST_CC_FLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm -lfreetype -lyaml
+	POST_CC_FLAGS=-L./libs/lib -lglfw3 -lgdi32 -lopengl32 -lcglm -lfreetype
 
 	PRE_BUILD_COMMAND=if not exist "build" mkdir build & mkdir build\bin & mkdir build\objs > NUL
 	POST_BUILD_COMMAND=xcopy /E /I /Y src_data build\bin\data > NUL
@@ -18,7 +18,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		CC_FILE=./src/platforms/linux/index.c
-		POST_CC_FLAGS=-L./libs/lib -lm -lz -lbz2 -ldl -lpng16 -lX11 -lGL -lglfw3 -lcglm -lfreetype -lyaml -pthread
+		POST_CC_FLAGS=-L./libs/lib -lm -lz -lbz2 -ldl -lpng16 -lX11 -lGL -lglfw3 -lcglm -lfreetype -pthread
 
 		PRE_BUILD_COMMAND=mkdir -p build/bin & mkdir -p build/objs > dev/null
 		POST_BUILD_COMMAND=cp -R src_data build/bin/data > dev/null
