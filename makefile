@@ -26,7 +26,7 @@ else
 	endif
 endif
 
-all: build/objs/spark.o
+all:
 	@echo ==========
 	@echo Creating directories...
 	@$(PRE_BUILD_COMMAND)
