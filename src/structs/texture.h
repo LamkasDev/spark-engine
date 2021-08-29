@@ -11,5 +11,7 @@ struct SparkTexture {
 typedef struct SparkTexture SparkTexture;
 SparkTexture sparkCreateTexture(char* name);
 void sparkLoadTexture(SparkTexture* texture, char* path);
+void sparkDeleteTexture(SparkTexture* texture);
+bool sparkDeleteTextureIter(const void *item, void *udata);
 
 #endif

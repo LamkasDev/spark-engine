@@ -68,3 +68,27 @@ void sparkLoadFont(FT_Library* library, SparkFont* font, char* path) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
     FT_Done_Face(face);
 }
+
+/**
+ * Deletes a font.
+ * 
+ * @param font a pointer to a font
+ * 
+ */
+void sparkDeleteFont(SparkFont* font) {
+    for (unsigned char c = 0; c < 128; c++) {
+        SparkCharacter* character = hashmap_get(font->characters, &c);
+        if(character != NULL) {
+            glDeleteTextures(1, &character->id);
+        }
+    }
+}
+
+/**
+ * An iterator to delete all fonts in a hashmap.
+ */
+bool sparkDeleteFontIter(const void *item, void *udata) {
+    SparkFont* font = (SparkFont*)item;
+    sparkDeleteFont(font);
+    return true;
+}

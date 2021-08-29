@@ -19,3 +19,22 @@ SparkMaterial sparkCreateMaterial(char* name, SparkShader* shader) {
 
     return material;
 }
+
+/**
+ * Deletes a material.
+ * 
+ * @param texture a pointer to a texture
+ * 
+ */
+void sparkDeleteMaterial(SparkMaterial* material) {
+
+}
+
+/**
+ * An iterator to delete all materials in a hashmap.
+ */
+bool sparkDeleteMaterialIter(const void *item, void *udata) {
+    SparkMaterial* material = (SparkMaterial*)item;
+    sparkDeleteMaterial(material);
+    return true;
+}

@@ -28,9 +28,12 @@ struct SparkRenderer {
     int wh;
 };
 typedef struct SparkRenderer SparkRenderer;
+
+void sparkSetupRenderer(SparkRenderer* renderer);
 void sparkSetupWindow(SparkRenderer* renderer);
-SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath);
 void sparkOnWindowResize(GLFWwindow* window, int w, int h);
+
+SparkShader sparkCompileShader(SparkRenderer* renderer, char* name, char* vertexPath, char* fragmentPath);
 
 void sparkCreateAllRendererObjectGroups(SparkRenderer* renderer);
 void sparkCreateRendererObjectGroups(SparkRenderer* renderer, SparkGameObject* gameObject);
@@ -45,5 +48,6 @@ void sparkDeleteRendererObjectGroup(SparkRenderer* renderer, SparkRendererObject
 
 void sparkRender(SparkRenderer* renderer);
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene);
+void sparkDeleteRenderer(SparkRenderer* renderer);
 
 #endif

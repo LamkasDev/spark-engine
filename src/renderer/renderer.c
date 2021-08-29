@@ -5,14 +5,29 @@
 #include "3D/3D_utils.h"
 
 /**
+ * Setups a renderer.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
+void sparkSetupRenderer(SparkRenderer* renderer) {
+    renderer->store = sparkCreateStore();
+    renderer->rendererObjectGroups = vector_create();
+    renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL);
+    renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHashmapTextureHash, sparkHashmapTextureCompare, NULL);
+    renderer->materials = hashmap_new(sizeof(SparkMaterial), 0, 0, 0, sparkHashmapMaterialHash, sparkHashmapMaterialCompare, NULL);
+    renderer->fonts = hashmap_new(sizeof(SparkFont), 0, 0, 0, sparkHashmapFontHash, sparkHashmapFontCompare, NULL);
+
+    FT_Init_FreeType(&renderer->ft);
+}
+
+/**
  * Setups a GLFW windows and the renderer.
  * 
  * @param renderer a pointer to a renderer
  * 
  */
 void sparkSetupWindow(SparkRenderer* renderer) {
-    renderer->store = sparkCreateStore();
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -33,14 +48,7 @@ void sparkSetupWindow(SparkRenderer* renderer) {
     glfwGetWindowSize(window, &renderer->ww, &renderer->wh);
     glViewport(0, 0, renderer->ww, renderer->wh);
 
-    renderer->rendererObjectGroups = vector_create();
-    renderer->shaders = hashmap_new(sizeof(SparkShader), 0, 0, 0, sparkHasmapShaderHash, sparkHashmapShaderCompare, NULL);
-    renderer->textures = hashmap_new(sizeof(SparkTexture), 0, 0, 0, sparkHashmapTextureHash, sparkHashmapTextureCompare, NULL);
-    renderer->materials = hashmap_new(sizeof(SparkMaterial), 0, 0, 0, sparkHashmapMaterialHash, sparkHashmapMaterialCompare, NULL);
-    renderer->fonts = hashmap_new(sizeof(SparkFont), 0, 0, 0, sparkHashmapFontHash, sparkHashmapFontCompare, NULL);
     renderer->window = window;
-
-    FT_Init_FreeType(&renderer->ft);
 }
 
 /**
@@ -281,115 +289,89 @@ void sparkRender(SparkRenderer* renderer) {
     glm_translate(view, locVec);
     glm_perspective(glm_rad(90.0f), (float)renderer->ww / (float)renderer->wh, 0.1f, 100.0f, proj);
 
-    /* FPS limiter */
-    float targetFPS = 60.00f;
-    float targetDeltaTime = targetFPS < 0.0f ? 0.0f : 1.00f / targetFPS;
-    clock_t clock_0 = clock();
-
-    float bounceValue = 0.0f;
-    float bounceX = 3.0f;
-    float bounceY = 3.0f;
-
     /* Main render loop */
-    while(!glfwWindowShouldClose(renderer->window)) {
-        float deltaTime = ((clock() - clock_0) / 1000.0f);
-        if(deltaTime > targetDeltaTime) {
-            glfwGetWindowSize(renderer->window, &renderer->ww, &renderer->wh);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glfwGetWindowSize(renderer->window, &renderer->ww, &renderer->wh);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            /* Update all renderer object groups */
-            sparkUpdateAllRendererObjectGroups(renderer);
+    /* Update all renderer object groups */
+    sparkUpdateAllRendererObjectGroups(renderer);
 
-            /* Draw all renderer objects groups*/
-            /* TODO: move this somewhere else */
-            for(int i = 0; i < vector_size(renderer->rendererObjectGroups); i++) {
-                SparkRendererObjectGroup* rendererObjectGroup = &renderer->rendererObjectGroups[i];
-                for(int j = 0; j < vector_size(rendererObjectGroup->objects); j++) {
-                    SparkRendererObject* rendererObject = &rendererObjectGroup->objects[j];
+    /* Draw all renderer objects groups*/
+    /* TODO: move this somewhere else */
+    for(int i = 0; i < vector_size(renderer->rendererObjectGroups); i++) {
+        SparkRendererObjectGroup* rendererObjectGroup = &renderer->rendererObjectGroups[i];
+        for(int j = 0; j < vector_size(rendererObjectGroup->objects); j++) {
+            SparkRendererObject* rendererObject = &rendererObjectGroup->objects[j];
 
-                    SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
-                    SparkMaterial* material = materialData->data;
-                    SparkComponentData* shaderData = hashmap_get(material->data, &(SparkComponentData){ .key = "shader" });
-                    SparkShader* shader = shaderData->data;
+            SparkComponentData* materialData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "material" });
+            SparkMaterial* material = materialData->data;
+            SparkComponentData* shaderData = hashmap_get(material->data, &(SparkComponentData){ .key = "shader" });
+            SparkShader* shader = shaderData->data;
 
-                    sparkBindRendererObject(rendererObject);
-                    sparkActivateShader(shader);
-                    switch(rendererObject->component->type) {
-                        case COMPONENT_TYPE_3D_RENDERER: {
-                            GLuint modelLoc0 = glGetUniformLocation(shader->id, "model");
-                            glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
-                            GLuint viewLoc0 = glGetUniformLocation(shader->id, "view");
-                            glUniformMatrix4fv(viewLoc0, 1, GL_FALSE, view);
-                            GLuint projLoc0 = glGetUniformLocation(shader->id, "proj");
-                            glUniformMatrix4fv(projLoc0, 1, GL_FALSE, proj);
-                            break;
-                        }
+            sparkBindRendererObject(rendererObject);
+            sparkActivateShader(shader);
+            switch(rendererObject->component->type) {
+                case COMPONENT_TYPE_3D_RENDERER: {
+                    GLuint modelLoc0 = glGetUniformLocation(shader->id, "model");
+                    glUniformMatrix4fv(modelLoc0, 1, GL_FALSE, model);
+                    GLuint viewLoc0 = glGetUniformLocation(shader->id, "view");
+                    glUniformMatrix4fv(viewLoc0, 1, GL_FALSE, view);
+                    GLuint projLoc0 = glGetUniformLocation(shader->id, "proj");
+                    glUniformMatrix4fv(projLoc0, 1, GL_FALSE, proj);
+                    break;
+                }
 
-                        case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
-                            SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
-                            SparkTexture* texture = textureData->data;
+                case COMPONENT_TYPE_2D_TEXTURE_RENDERER: {
+                    SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
+                    SparkTexture* texture = textureData->data;
 
-                            GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
-                            glUniform1f(uniTex1, 0);
+                    GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
+                    glUniform1f(uniTex1, 0);
 
-                            glBindTexture(GL_TEXTURE_2D, texture->id);
-                            break;
-                        }
+                    glBindTexture(GL_TEXTURE_2D, texture->id);
+                    break;
+                }
 
-                        case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
-                            SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
-                            SparkTexture* texture = textureData->data;
+                case COMPONENT_TYPE_3D_TEXTURE_RENDERER: {
+                    SparkComponentData* textureData = hashmap_get(material->data, &(SparkComponentData){ .key = "texture" });
+                    SparkTexture* texture = textureData->data;
 
-                            GLuint modelLoc1 = glGetUniformLocation(shader->id, "model");
-                            glUniformMatrix4fv(modelLoc1, 1, GL_FALSE, model);
-                            GLuint viewLoc1 = glGetUniformLocation(shader->id, "view");
-                            glUniformMatrix4fv(viewLoc1, 1, GL_FALSE, view);
-                            GLuint projLoc1 = glGetUniformLocation(shader->id, "proj");
-                            glUniformMatrix4fv(projLoc1, 1, GL_FALSE, proj);
+                    GLuint modelLoc1 = glGetUniformLocation(shader->id, "model");
+                    glUniformMatrix4fv(modelLoc1, 1, GL_FALSE, model);
+                    GLuint viewLoc1 = glGetUniformLocation(shader->id, "view");
+                    glUniformMatrix4fv(viewLoc1, 1, GL_FALSE, view);
+                    GLuint projLoc1 = glGetUniformLocation(shader->id, "proj");
+                    glUniformMatrix4fv(projLoc1, 1, GL_FALSE, proj);
 
-                            GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
-                            glUniform1f(uniTex1, 0);
+                    GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
+                    glUniform1f(uniTex1, 0);
 
-                            glBindTexture(GL_TEXTURE_2D, texture->id);
-                            break;
-                        }
+                    glBindTexture(GL_TEXTURE_2D, texture->id);
+                    break;
+                }
 
-                        case COMPONENT_TYPE_TEXT_RENDERER: {
-                            SparkComponentData* textData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "text" });
-                            char* text = renderer->store.strings[(uintptr_t)textData->data];
-                            SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
-                            SparkFont* font = fontData->data;
-                            SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[j] });
+                case COMPONENT_TYPE_TEXT_RENDERER: {
+                    SparkComponentData* textData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "text" });
+                    char* text = renderer->store.strings[(uintptr_t)textData->data];
+                    SparkComponentData* fontData = hashmap_get(rendererObject->component->data, &(SparkComponentData){ .key = "font" });
+                    SparkFont* font = fontData->data;
+                    SparkCharacter* currentCharacter = hashmap_get(font->characters, &(SparkCharacter){ .c = text[j] });
 
-                            GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
-                            glUniform1f(uniTex1, 0);
-                            GLuint uniColor = glGetUniformLocation(shader->id, "color");
-                            glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
+                    GLuint uniTex1 = glGetUniformLocation(shader->id, "tex0");
+                    glUniform1f(uniTex1, 0);
+                    GLuint uniColor = glGetUniformLocation(shader->id, "color");
+                    glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
 
-                            glBindTexture(GL_TEXTURE_2D, currentCharacter->id);
-                            break;
-                        }
-                    }
-                    sparkDrawRendererObject(rendererObject);
-                    sparkUnbindRendererObject(rendererObject);
+                    glBindTexture(GL_TEXTURE_2D, currentCharacter->id);
+                    break;
                 }
             }
-
-            clock_0 = clock();
-            glfwSwapBuffers(renderer->window);
+            sparkDrawRendererObject(rendererObject);
+            sparkUnbindRendererObject(rendererObject);
         }
-
-        glfwPollEvents();
     }
 
-    sparkDeleteAllRendererObjectGroups(renderer);
-    hashmap_scan(renderer->shaders, sparkDeleteShaderIter, NULL);
-    /* TODO: Delete all textures */
-    /* TODO: Delete all materials */
-    /* TODO: Delete all fonts */
-
-    glfwDestroyWindow(renderer->window);
-    glfwTerminate();
+    glfwSwapBuffers(renderer->window);
 }
 
 /**
@@ -402,4 +384,18 @@ void sparkRender(SparkRenderer* renderer) {
 void sparkLoadScene(SparkRenderer* renderer, SparkScene* scene) {
     renderer->scene = scene;
     sparkCreateAllRendererObjectGroups(renderer);
+}
+
+/**
+ * Deletes a renderer.
+ * 
+ * @param renderer a pointer to a renderer
+ * 
+ */
+void sparkDeleteRenderer(SparkRenderer* renderer) {
+    sparkDeleteAllRendererObjectGroups(renderer);
+    hashmap_scan(renderer->shaders, sparkDeleteShaderIter, NULL);
+    hashmap_scan(renderer->textures, sparkDeleteTextureIter, NULL);
+    hashmap_scan(renderer->materials, sparkDeleteMaterialIter, NULL);
+    hashmap_scan(renderer->fonts, sparkDeleteFontIter, NULL);
 }

@@ -10,5 +10,7 @@ struct SparkMaterial {
 };
 typedef struct SparkMaterial SparkMaterial;
 SparkMaterial sparkCreateMaterial(char* name, SparkShader* shader);
+void sparkDeleteMaterial(SparkMaterial* material);
+bool sparkDeleteMaterialIter(const void *item, void *udata);
 
 #endif

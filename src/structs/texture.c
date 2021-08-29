@@ -66,3 +66,22 @@ void sparkLoadTexture(SparkTexture* texture, char* path) {
     stbi_image_free(textureData);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+/**
+ * Deletes a texture.
+ * 
+ * @param texture a pointer to a texture
+ * 
+ */
+void sparkDeleteTexture(SparkTexture* texture) {
+    glDeleteTextures(1, &texture->id);
+}
+
+/**
+ * An iterator to delete all textures in a hashmap.
+ */
+bool sparkDeleteTextureIter(const void *item, void *udata) {
+    SparkTexture* texture = (SparkTexture*)item;
+    sparkDeleteTexture(texture);
+    return true;
+}

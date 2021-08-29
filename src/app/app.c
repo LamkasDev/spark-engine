@@ -16,6 +16,7 @@ void sparkSetupApp(SparkApp* app) {
  * 
  */
 void sparkSetupAppRenderer(SparkApp* app) {
+    sparkSetupRenderer(&app->renderer);
     sparkSetupWindow(&app->renderer);
 
     stbi_set_flip_vertically_on_load(true);
