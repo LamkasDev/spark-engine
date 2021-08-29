@@ -23,7 +23,7 @@ void sparkSetupAppRenderer(SparkApp* app) {
 
     int iconC;
     GLFWimage icons[1];
-    icons[0].pixels = stbi_load(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/textures/icon.png")), &icons[0].width, &icons[0].height, &iconC, 0);
+    icons[0].pixels = stbi_load(sparkCombinePaths(app->assetsPath, sparkCreatePathFromString("/app/textures/icon.png")), &icons[0].width, &icons[0].height, &iconC, 0);
     glfwSetWindowIcon(app->renderer.window, 1, icons);
 }
 
